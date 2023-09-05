@@ -8,6 +8,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            font-style: normal;
             margin: 0;
             padding: 0;
             background-color: #1a1b1a;
@@ -46,11 +47,57 @@
             text-decoration: underline;
         }
         .icon-default::before {
-        content: "\1F480"; /* Unicode character code for a skull icon */
-        font-family: "Font Awesome 5 Free";
-        margin-right: 15px;
-        margin-left: 5px;
-        color: #FF5733;
+            content: "\f15b"; /* Unicode character code for the "file-alt" icon in Font Awesome */
+            font-family: "Font Awesome 5 Free";
+            font-style: normal;
+            margin-right: 15px;
+            margin-left: 5px;
+            color: white;
+        }
+        .icon-folder::before {
+            content: "\f07c"; /* Unicode character code for a folder icon */
+            font-family: "Font Awesome 5 Free";
+            font-style: normal;
+            margin-right: 15px;
+            margin-left: 5px;
+            color: #428bca;
+        }
+        /* Icons for specific file types mapping*/
+        .icon-zip::before {
+            content: "\f1c6"; /* Unicode character code for a zip file icon */
+            font-family: "Font Awesome 5 Free";
+            font-style: normal;
+            margin-right: 15px;
+            margin-left: 5px;
+            color: #E91E63;
+        }
+        .icon-pdf::before {
+            content: "\f1c1"; /* Unicode character code for a pdf file icon */
+            font-family: "Font Awesome 5 Free";
+            font-style: normal;
+            margin-right: 15px;
+            margin-left: 5px;
+            color: #FF9800;
+        }
+        .icon-doc::before {
+            content: "\f1c2"; /* Unicode character code for a doc file icon */
+            font-family: "Font Awesome 5 Free";
+            font-style: normal;
+            margin-right: 15px;
+            margin-left: 5px;
+            color: #2196F3;
+        }
+        .icon-txt::before {
+            content: "\f15c"; /* Unicode character code for a txt file icon */
+            font-family: "Font Awesome 5 Free";
+            font-style: normal;
+            margin-right: 15px;
+            margin-left: 5px;
+            color: #4CAF50;
+        }
+        /* Indent folder contents */
+        ul.folder-contents {
+            margin-left: 20px; /* Adjust the amount of indentation as needed */
         }
     </style>
 </head>
@@ -67,14 +114,38 @@
                 // Create an array to store the file extensions
                 $notAllowedExtensions = array('html', 'php', 'swp', 'css');
 
-                echo '<ul>';
+                // Create a mapping of file extensions to CSS icons
+                $iconMapping = array(
+                    'pdf' => 'icon-pdf',
+                    'doc' => 'icon-doc',
+                    'txt' => 'icon-txt',
+                    'zip' => 'icon-zip',
+                    // Add more mappings as needed
+                );
+
                 foreach ($files as $file) {
                     // Exclude dot files and index files
                     if ($file != '.' && $file != '..' && !in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), $notAllowedExtensions)) {
-                        echo '<li><i class="icon-default"></i><a href="' . $file . '">' . $file . '</a></li>';
+                        $path = $directory . $file;
+                        if (is_dir($path)) {
+                            echo '<li><i class="icon-folder"></i><a href="' . $file . '">' . $file . '</a>';
+                            echo '<ul class="folder-contents">';
+                            $subfiles = scandir($path);
+                            foreach ($subfiles as $subfile) {
+                                if ($subfile != '.' && $subfile != '..') {
+                                    $extension = strtolower(pathinfo($subfile, PATHINFO_EXTENSION));
+                                    $iconClass = isset($iconMapping[$extension]) ? $iconMapping[$extension] : 'icon-default'; // Default to 'icon-default' if no mapping found
+                                    echo '<li><i class="' . $iconClass . '"></i><a href="' . $file . '/' . $subfile . '">' . $subfile . '</a></li>';
+                                }
+                            }
+                            echo '</ul></li>';
+                        } else {
+                            $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+                            $iconClass = isset($iconMapping[$extension]) ? $iconMapping[$extension] : 'icon-default'; // Default to 'icon-default' if no mapping found
+                            echo '<li><i class="' . $iconClass . '"></i><a href="' . $file . '">' . $file . '</a></li>';
+                        }
                     }
                 }
-                echo '</ul>';
             ?>
         </ul>
     </div>
