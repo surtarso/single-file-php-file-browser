@@ -13,6 +13,12 @@ The project offers the following functionalities:
 - Differentiates between files and folders.
 - Excludes specific file extensions, such as HTML, PHP, SWP, and CSS, from the listing.
 
+## Screenshot
+
+<p align="center">
+    <img src="screenshot.png" alt="Screenshot">
+</p>
+
 ## Usage
 
 To use the Single File PHP Directory Listing, follow these simple steps:
@@ -41,140 +47,108 @@ To maintain simplicity and effectiveness, this project follows some best practic
 
 ## Code Explanation
 
-Here's a line-by-line explanation of the provided PHP code:
+This PHP code snippet is designed to generate a directory listing for a specified directory, presenting its contents in a structured HTML format. The code can be used to showcase files and subdirectories while allowing for customization of icons based on file extensions. Below is a breakdown of how the code works:
+
+### Function `listDirectory`
 
 ```php
-<?php
-    $directory = './'; // Specify the directory you want to list
-```
-- This line sets the `$directory` variable to the current directory (`'./'`). You can change this value to specify a different directory that you want to list.
-
-```php
-    $files = scandir($directory);
-```
-- This line uses the `scandir` function to retrieve an array of all files and directories in the specified `$directory`. It stores the result in the `$files` variable.
-
-```php
-    // Create an array to store the file extensions
-    $notAllowedExtensions = array('html', 'php', 'swp', 'css');
-```
-- This line defines an array called `$notAllowedExtensions` that contains a list of file extensions that you want to exclude from the listing. Files with these extensions will not be displayed.
-
-```php
-    // Create a mapping of file extensions to CSS icons
-    $iconMapping = array(
-        'pdf' => 'icon-pdf',
-        'doc' => 'icon-doc',
-        'txt' => 'icon-txt',
-        'zip' => 'icon-zip',
-        // Add more mappings as needed
-    );
-```
-- Here, an associative array called `$iconMapping` is created. It maps file extensions to CSS classes for icons. For example, 'pdf' is mapped to 'icon-pdf', and 'doc' is mapped to 'icon-doc'. You can add more mappings for other file extensions and icons as needed.
-
-```php
-    foreach ($files as $file) {
-```
-- This line starts a `foreach` loop that iterates through each item (files and directories) in the `$files` array.
-
-```php
-        // Exclude dot files and index files
-        if ($file != '.' && $file != '..' && !in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), $notAllowedExtensions)) {
-```
-- This `if` condition checks whether the current `$file` is not a dot file ('.' or '..') and whether its file extension (after converting to lowercase) is not in the list of `$notAllowedExtensions`. If these conditions are met, the code inside the `if` block is executed.
-
-```php
-            $path = $directory . $file;
-```
-- This line constructs the full path to the current file or directory by concatenating the `$directory` and `$file` variables.
-
-```php
-            if (is_dir($path)) {
-```
-- Here, it checks whether the current item (specified by `$path`) is a directory. If it is a directory, the code within this `if` block is executed.
-
-```php
-                echo '<li><i class="icon-folder"></i><a href="' . $file . '">' . $file . '</a>';
-```
-- This line displays a list item (`<li>`) with an icon representing a folder ('icon-folder') and a hyperlink (`<a>`) with the name of the directory (`$file`) as the link text.
-
-```php
-                echo '<ul class="folder-contents">';
-```
-- This line starts an unordered list (`<ul>`) with the class 'folder-contents' to display the contents of the folder. This is the beginning of nested content.
-
-```php
-                $subfiles = scandir($path);
-```
-- It uses `scandir` to retrieve an array of all files and directories inside the current folder (specified by `$path`) and stores them in the `$subfiles` variable.
-
-```php
-                foreach ($subfiles as $subfile) {
-```
-- This line starts another `foreach` loop to iterate through each item (files and directories) in the `$subfiles` array.
-
-```php
-                    if ($subfile != '.' && $subfile != '..') {
-```
-- Similar to the previous condition, this `if` condition checks if the current `$subfile` is not a dot file ('.' or '..'). If it's not, the code inside this `if` block is executed.
-
-```php
-                        $extension = strtolower(pathinfo($subfile, PATHINFO_EXTENSION));
-```
-- This line extracts and stores the lowercase file extension of the current `$subfile` in the `$extension` variable.
-
-```php
-                        $iconClass = isset($iconMapping[$extension]) ? $iconMapping[$extension] : 'icon-default';
-```
-- Here, it checks if there is an entry in the `$iconMapping` array for the current `$extension`. If an entry exists, it assigns the corresponding icon class to the `$iconClass` variable. Otherwise, it defaults to 'icon-default'.
-
-```php
-                        echo '<li><i class="' . $iconClass . '"></i><a href="' . $file . '/' . $subfile . '">' . $subfile . '</a></li>';
-```
-- This line displays a list item (`<li>`) with an icon based on the `$iconClass` and a hyperlink (`<a>`) with the name of the file or directory (`$subfile`) as the link text. This represents the individual files or subdirectories within the folder.
-
-```php
-                }
+function listDirectory($directory) {
+    // ...
+}
 ```
 
-```php
-                echo '</ul></li>';
-``
+- `listDirectory` is a recursive function that takes the path to a directory as its parameter.
 
-`
-- This line closes the unordered list (`</ul>`) that contains the contents of the folder and the list item (`</li>`) for the folder itself.
+### Scanning Directory Contents
 
 ```php
-            } else {
-```
-- If the current item is not a directory, this `else` block is executed.
-
-```php
-                $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-```
-- Similar to before, it extracts and stores the lowercase file extension of the current file in the `$extension` variable.
-
-```php
-                $iconClass = isset($iconMapping[$extension]) ? $iconMapping[$extension] : 'icon-default';
-```
-- This line assigns the appropriate icon class to the `$iconClass` variable based on the file's extension, using the `$iconMapping` array.
-
-```php
-                echo '<li><i class="' . $iconClass . '"></i><a href="' . $file . '">' . $file . '</a></li>';
-```
-- This line displays a list item (`<li>`) with an icon based on the `$iconClass` and a hyperlink (`<a>`) with the name of the file (`$file`) as the link text. This represents individual files (not directories).
-
-```php
-            }
+$files = scandir($directory);
 ```
 
-```php
-        }
-```
+- `scandir` is used to retrieve an array of files and directories within the specified `$directory`.
+
+### Excluded File Extensions
 
 ```php
-    }
-?>
+$notAllowedExtensions = array('html', 'php', 'swp', 'css');
 ```
 
-I've provided comments explaining each part of the code to help you understand its functionality and purpose. You can use these comments as documentation to clarify how the code works and what each section does.
+- An array, `$notAllowedExtensions`, is defined to store file extensions that should be excluded from the listing. These extensions won't be displayed in the directory listing.
+
+### File Extension to Icon Mapping
+
+```php
+$iconMapping = array(
+    'pdf' => 'icon-pdf',
+    'doc' => 'icon-doc',
+    'txt' => 'icon-txt',
+    'zip' => 'icon-zip',
+    'md' => 'icon-md',
+    'tar' => 'icon-tar',
+    'gz' => 'icon-gz',
+    'sh' => 'icon-sh',
+    // Add more mappings as needed
+);
+```
+
+- `$iconMapping` is an associative array that maps file extensions to corresponding CSS icon classes. These classes determine the icons displayed next to file names in the directory listing.
+
+### Generating the Directory Listing
+
+```php
+echo '<ul class="folder-contents">';
+foreach ($files as $file) {
+    // ...
+}
+echo '</ul>';
+```
+
+- An unordered list (`<ul>`) with the class "folder-contents" is initiated to structure the directory listing.
+
+### Iterating Through Files and Subdirectories
+
+```php
+foreach ($files as $file) {
+    // ...
+}
+```
+
+- A `foreach` loop iterates through the files and directories obtained from `$files`.
+
+### Handling Subdirectories Recursively
+
+```php
+if (is_dir($path)) {
+    // ...
+}
+```
+
+- If the current item in the loop is a directory, it is displayed as a folder in the listing. The function `listDirectory` is then called recursively to list the contents of the subdirectory.
+
+## Customizing Icons and File Links
+
+```php
+$iconClass = isset($iconMapping[$extension]) ? $iconMapping[$extension] : 'icon-default';
+echo '<li><i class="' . $iconClass . '"></i><a href="' . $file . '">' . $file . '</a></li>';
+```
+
+- Icons are customized based on file extensions using the `$iconMapping` array. If an extension is not found in the mapping, it defaults to 'icon-default'.
+- Hyperlinks are generated for each file or directory entry.
+
+## Specifying the Directory
+
+```php
+$directory = './'; // Specify the directory you want to list
+```
+
+- The `$directory` variable is set to the path of the directory you want to list.
+
+## Invoking the Function
+
+```php
+listDirectory($directory);
+```
+
+- Finally, the `listDirectory` function is called with the specified directory to generate the directory listing.
+
+This code provides a flexible way to display and customize directory listings, making it useful for creating file browsers and similar applications.
