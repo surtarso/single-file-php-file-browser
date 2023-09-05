@@ -125,7 +125,7 @@ if (is_dir($path)) {
 
 - If the current item in the loop is a directory, it is displayed as a folder in the listing. The function `listDirectory` is then called recursively to list the contents of the subdirectory.
 
-## Customizing Icons and File Links
+### Customizing Icons and File Links
 
 ```php
 $iconClass = isset($iconMapping[$extension]) ? $iconMapping[$extension] : 'icon-default';
@@ -135,7 +135,7 @@ echo '<li><i class="' . $iconClass . '"></i><a href="' . $file . '">' . $file . 
 - Icons are customized based on file extensions using the `$iconMapping` array. If an extension is not found in the mapping, it defaults to 'icon-default'.
 - Hyperlinks are generated for each file or directory entry.
 
-## Specifying the Directory
+### Specifying the Directory
 
 ```php
 $directory = './'; // Specify the directory you want to list
@@ -143,7 +143,7 @@ $directory = './'; // Specify the directory you want to list
 
 - The `$directory` variable is set to the path of the directory you want to list.
 
-## Invoking the Function
+### Invoking the Function
 
 ```php
 listDirectory($directory);
