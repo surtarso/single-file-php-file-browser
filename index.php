@@ -37,7 +37,6 @@
         }
         li {
             padding: 10px 0;
-            border-bottom: 1px solid #1a1b1a;
         }
         a {
             color: white;
@@ -46,54 +45,55 @@
         a:hover {
             text-decoration: underline;
         }
+        /* Common styles for all icons */
+        i {
+            font-family: "Font Awesome 5 Free";
+            font-style: normal;
+            margin-right: 15px;
+            margin-left: 5px;
+        }
+        /* Default icon style */
         .icon-default::before {
             content: "\f15b"; /* Unicode character code for the "file-alt" icon in Font Awesome */
-            font-family: "Font Awesome 5 Free";
-            font-style: normal;
-            margin-right: 15px;
-            margin-left: 5px;
             color: white;
         }
+        /* Folder icon style */
         .icon-folder::before {
             content: "\f07c"; /* Unicode character code for a folder icon */
-            font-family: "Font Awesome 5 Free";
-            font-style: normal;
-            margin-right: 15px;
-            margin-left: 5px;
             color: #428bca;
         }
-        /* Icons for specific file types mapping*/
+        /* Icons for specific file types mapping */
         .icon-zip::before {
             content: "\f1c6"; /* Unicode character code for a zip file icon */
-            font-family: "Font Awesome 5 Free";
-            font-style: normal;
-            margin-right: 15px;
-            margin-left: 5px;
             color: #E91E63;
         }
         .icon-pdf::before {
             content: "\f1c1"; /* Unicode character code for a pdf file icon */
-            font-family: "Font Awesome 5 Free";
-            font-style: normal;
-            margin-right: 15px;
-            margin-left: 5px;
             color: #FF9800;
         }
         .icon-doc::before {
             content: "\f1c2"; /* Unicode character code for a doc file icon */
-            font-family: "Font Awesome 5 Free";
-            font-style: normal;
-            margin-right: 15px;
-            margin-left: 5px;
             color: #2196F3;
         }
         .icon-txt::before {
             content: "\f15c"; /* Unicode character code for a txt file icon */
-            font-family: "Font Awesome 5 Free";
-            font-style: normal;
-            margin-right: 15px;
-            margin-left: 5px;
             color: #4CAF50;
+        }
+        .icon-md::before {
+            content: "\f15b"; /* Unicode character code for a file-alt icon */
+            color: blue;
+        }
+        .icon-tar::before {
+            content: "\f1c7"; /* Unicode character code for a tar file icon */
+            color: orange;
+        }
+        .icon-gz::before {
+            content: "\f1c8"; /* Unicode character code for a gz file icon */
+            color: red;
+        }
+        .icon-sh::before {
+            content: "\f017"; /* Unicode character code for a code icon */
+            color: gray; 
         }
         /* Indent folder contents */
         ul.folder-contents {
@@ -108,44 +108,45 @@
     <div class="content">
         <ul>
             <?php
-                $directory = './'; // Specify the directory you want to list
-                $files = scandir($directory);
+                function listDirectory($directory) {
+                    $files = scandir($directory);
 
-                // Create an array to store the file extensions
-                $notAllowedExtensions = array('html', 'php', 'swp', 'css');
+                    // Create an array to store the file extensions
+                    $notAllowedExtensions = array('html', 'php', 'swp', 'css');
 
-                // Create a mapping of file extensions to CSS icons
-                $iconMapping = array(
-                    'pdf' => 'icon-pdf',
-                    'doc' => 'icon-doc',
-                    'txt' => 'icon-txt',
-                    'zip' => 'icon-zip',
-                    // Add more mappings as needed
-                );
+                    // Create a mapping of file extensions to CSS icons
+                    $iconMapping = array(
+                        'pdf' => 'icon-pdf',
+                        'doc' => 'icon-doc',
+                        'txt' => 'icon-txt',
+                        'zip' => 'icon-zip',
+                        'md' => 'icon-md',
+                        'tar' => 'icon-tar',
+                        'gz' => 'icon-gz',
+                        'sh' => 'icon-sh',
+                        // Add more mappings as needed
+                    );
 
-                foreach ($files as $file) {
-                    // Exclude dot files and index files
-                    if ($file != '.' && $file != '..' && !in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), $notAllowedExtensions)) {
-                        $path = $directory . $file;
-                        if (is_dir($path)) {
-                            echo '<li><i class="icon-folder"></i><a href="' . $file . '">' . $file . '</a>';
-                            echo '<ul class="folder-contents">';
-                            $subfiles = scandir($path);
-                            foreach ($subfiles as $subfile) {
-                                if ($subfile != '.' && $subfile != '..') {
-                                    $extension = strtolower(pathinfo($subfile, PATHINFO_EXTENSION));
-                                    $iconClass = isset($iconMapping[$extension]) ? $iconMapping[$extension] : 'icon-default'; // Default to 'icon-default' if no mapping found
-                                    echo '<li><i class="' . $iconClass . '"></i><a href="' . $file . '/' . $subfile . '">' . $subfile . '</a></li>';
-                                }
+                    echo '<ul class="folder-contents">';
+                    foreach ($files as $file) {
+                        // Exclude dot files and index files
+                        if ($file != '.' && $file != '..' && !in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), $notAllowedExtensions)) {
+                            $path = $directory . '/' . $file;
+                            if (is_dir($path)) {
+                                echo '<li><i class="icon-folder"></i><a href="' . $file . '">' . $file . '</a>';
+                                listDirectory($path); // Recursively list contents of subfolder
+                                echo '</li>';
+                            } else {
+                                $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+                                $iconClass = isset($iconMapping[$extension]) ? $iconMapping[$extension] : 'icon-default'; // Default to 'icon-default' if no mapping found
+                                echo '<li><i class="' . $iconClass . '"></i><a href="' . $file . '">' . $file . '</a></li>';
                             }
-                            echo '</ul></li>';
-                        } else {
-                            $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-                            $iconClass = isset($iconMapping[$extension]) ? $iconMapping[$extension] : 'icon-default'; // Default to 'icon-default' if no mapping found
-                            echo '<li><i class="' . $iconClass . '"></i><a href="' . $file . '">' . $file . '</a></li>';
                         }
                     }
+                    echo '</ul>';
                 }
+                $directory = './'; // Specify the directory you want to list
+                listDirectory($directory);
             ?>
         </ul>
     </div>
