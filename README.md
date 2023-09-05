@@ -13,6 +13,18 @@ The project offers the following functionalities:
 - Differentiates between files and folders. (TODO)
 - Excludes specific file extensions, such as HTML, PHP, SWP, and CSS, from the listing.
 
+## Usage
+
+To use the Single File PHP Directory Listing, follow these simple steps:
+
+1. Download the `index.php` file from this project.
+
+2. Place the `index.php` file in the folder you want to share on the web.
+
+3. Access the folder using a web browser. You can do this by entering the folder's URL in your web browser's address bar. For example, if you placed `index.php` in a folder called "MyFiles" on your web server, you would access it like this: `http://yourdomain.com/MyFiles/`.
+
+The `index.php` file will automatically generate a directory listing for the specified folder, allowing you to view and access the contained files and folders via a user-friendly web interface.
+
 ## Technologies Used
 
 - **PHP**: PHP is used to generate the directory listing and handle file system operations.
