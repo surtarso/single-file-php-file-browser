@@ -62,7 +62,7 @@
         }
         .file-size {
             float: right;
-            padding: 0 10px;
+            padding: 0 15px;
             color: whitesmoke;
         }
         /* Common styles for all icons */
@@ -265,7 +265,7 @@
                                 $iconClass = isset($iconMapping[$extension]) ? $iconMapping[$extension] : 'icon-default'; // Default to 'icon-default' if no mapping found
                                 $filePath = $directory . '/' . $file;
                                 $fileSize = formatFileSize(filesize($filePath)); // Get and format the file size
-                                echo '<li><i class="' . $iconClass . '"></i><a href="' . $file . '">' . $file . '</a> <span class="file-size">' . $fileSize . '</span></li>';
+                                echo '<li style="border-bottom: 1px solid #1a1b1a;"><i class="' . $iconClass . '"></i><a href="' . $file . '">' . $file . '</a> <span class="file-size">' . $fileSize . '</span></li>';
                             }
                         }
                     }
