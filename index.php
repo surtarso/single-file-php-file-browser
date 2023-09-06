@@ -1,10 +1,22 @@
+<?php
+    // Get the current URL
+    $currentUrl = $_SERVER['REQUEST_URI'];
+
+    // Split the URL by "/" and get the last segment
+    $urlSegments = explode('/', rtrim($currentUrl, '/'));
+    $lastSegment = end($urlSegments);
+
+    // Capitalize the first letter of the last segment
+    $headerTitle = ucfirst($lastSegment);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <title>Stuff</title>
+    <title><?php echo $headerTitle; ?></title>
     <style>
         body {
             font-family: "Font Awesome 5 Free", Arial, sans-serif;
@@ -46,7 +58,12 @@
             text-decoration: underline;
         }
         ul.folder-contents {
-        margin-left: 20px; /* Indent folder contents */
+            margin-left: 20px; /* Indent folder contents */
+        }
+        .file-size {
+            float: right;
+            padding: 0 10px;
+            color: whitesmoke;
         }
         /* Common styles for all icons */
         i {
@@ -153,7 +170,7 @@
 </head>
 <body>
     <header>
-        <h1>Stuff</h1>
+        <h1>List of <?php echo $headerTitle; ?></h1>
     </header>
     <div class="content">
         <ul>
@@ -246,12 +263,22 @@
                             } else {
                                 $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
                                 $iconClass = isset($iconMapping[$extension]) ? $iconMapping[$extension] : 'icon-default'; // Default to 'icon-default' if no mapping found
-                                echo '<li><i class="' . $iconClass . '"></i><a href="' . $file . '">' . $file . '</a></li>';
+                                $filePath = $directory . '/' . $file;
+                                $fileSize = formatFileSize(filesize($filePath)); // Get and format the file size
+                                echo '<li><i class="' . $iconClass . '"></i><a href="' . $file . '">' . $file . '</a> <span class="file-size">' . $fileSize . '</span></li>';
                             }
                         }
                     }
 
                     echo '</ul>';
+                }
+                
+                function formatFileSize($size) {
+                    $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+                    for ($i = 0; $size > 1024; $i++) {
+                        $size /= 1024;
+                    }
+                    return round($size, 2) . ' ' . $units[$i];
                 }
 
                 $directory = './'; // Specify the directory you want to list
