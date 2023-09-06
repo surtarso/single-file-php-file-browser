@@ -7,7 +7,7 @@
     <title>Stuff</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: "Font Awesome 5 Free", Arial, sans-serif;
             font-style: normal;
             margin: 0;
             padding: 0;
@@ -45,6 +45,9 @@
         a:hover {
             text-decoration: underline;
         }
+        ul.folder-contents {
+        margin-left: 20px; /* Indent folder contents */
+        }
         /* Common styles for all icons */
         i {
             font-family: "Font Awesome 5 Free";
@@ -52,53 +55,100 @@
             margin-right: 15px;
             margin-left: 5px;
         }
-        /* Default icon style */
+        /* Default fallback icon style */
         .icon-default::before {
             content: "\f15b"; /* Unicode character code for the "file-alt" icon in Font Awesome */
             color: white;
         }
         /* Folder icon style */
         .icon-folder::before {
-            content: "\f07c"; /* Unicode character code for a folder icon */
+            content: "\f07c";
             color: #428bca;
         }
         /* Icons for specific file types mapping */
-        .icon-zip::before {
-            content: "\f1c6"; /* Unicode character code for a zip file icon */
-            color: #E91E63;
-        }
-        .icon-pdf::before {
-            content: "\f1c1"; /* Unicode character code for a pdf file icon */
+        /* Documents */
+        .icon-pdf::before,
+        .icon-doc::before,
+        .icon-docx::before,
+        .icon-ppt::before,
+        .icon-pptx::before,
+        .icon-xls::before,
+        .icon-xlsx::before,
+        .icon-csv::before,
+        .icon-rtf::before {
+            content: "\f1c1"; /* PDF document, Word document, PowerPoint presentation, Excel spreadsheet, CSV file, Rich Text Format */
             color: #FF9800;
         }
-        .icon-doc::before {
-            content: "\f1c2"; /* Unicode character code for a doc file icon */
-            color: #2196F3;
-        }
-        .icon-txt::before {
-            content: "\f15c"; /* Unicode character code for a txt file icon */
+        .icon-txt::before,
+        .icon-md::before {
+            content: "\f15c"; /* Text document, Markdown document */
             color: #4CAF50;
         }
-        .icon-md::before {
-            content: "\f15b"; /* Unicode character code for a file-alt icon */
-            color: blue;
-        }
-        .icon-tar::before {
-            content: "\f1c7"; /* Unicode character code for a tar file icon */
-            color: orange;
-        }
+        /* Compressed Files */
+        .icon-zip::before,
+        .icon-rar::before,
+        .icon-tar::before,
         .icon-gz::before {
-            content: "\f1c8"; /* Unicode character code for a gz file icon */
-            color: red;
+            content: "\f1c6"; /* ZIP archive, RAR archive (similar to ZIP) */
+            color: #E91E63;
         }
-        .icon-sh::before {
-            content: "\f017"; /* Unicode character code for a code icon */
+        /* Executable/Scripts */
+        .icon-sh::before,
+        .icon-bat::before,
+        .icon-exe::before,
+        .icon-ps1::before,
+        .icon-py::before,
+        .icon-js::before,
+        .icon-php::before,
+        .icon-java::before,
+        .icon-cpp::before,
+        .icon-rb::before,
+        .icon-c::before {
+            content: "\f017"; /* Shell script, Batch script, Executable file, PowerShell script, Python script, JavaScript code, PHP script, Java source code, C++ source code, Ruby script, C source code */
             color: gray; 
         }
-        /* Indent folder contents */
-        ul.folder-contents {
-            margin-left: 20px; /* Adjust the amount of indentation as needed */
+        /* Media Files */
+        .icon-avi::before,
+        .icon-wmv::before,
+        .icon-mov::before,
+        .icon-mp4::before,
+        .icon-flv::before,
+        .icon-webm::before {
+            content: "\f03d"; /* AVI video, WMV video, MOV video, MP4 video, FLV video, WebM video */
+            color: #E91E63;
         }
+        .icon-mp3::before,
+        .icon-ogg::before,
+        .icon-wav::before,
+        .icon-flac::before,
+        .icon-aac::before,
+        .icon-wma::before,
+        .icon-m4a::before,
+        .icon-ape::before {
+            content: "\f001"; /* MP3 audio, OGG audio/video, WAV audio, FLAC audio, AAC audio, WMA audio, M4A audio, APE audio */
+            color: #FF9800;
+        }
+        .icon-jpg::before,
+        .icon-jpeg::before,
+        .icon-png::before,
+        .icon-gif::before,
+        .icon-bmp::before,
+        .icon-svg::before,
+        .icon-tiff::before,
+        .icon-webp::before {
+            content: "\f1c5"; /* JPEG image, PNG image, GIF image, BMP image, SVG image, TIFF image, WebP image */
+            color: #FF9800;
+        }
+        .icon-psd::before,
+        .icon-ai::before,
+        .icon-eps::before,
+        .icon-indd::before,
+        .icon-raw::before,
+        .icon-mkv::before {
+            content: "\f03d"; /* Adobe Photoshop document, Adobe Illustrator document, EPS vector image, Adobe InDesign document, RAW image, MKV video (similar to other video formats) */
+            color: #FF9800;
+        }
+        /* Add more mappings as needed */
     </style>
 </head>
 <body>
@@ -112,22 +162,79 @@
                     $files = scandir($directory);
 
                     // Create an array to store the file extensions
-                    $notAllowedExtensions = array('html', 'php', 'swp', 'css');
+                    $notAllowedExtensions = array('php', 'swp');
 
                     // Create a mapping of file extensions to CSS icons
                     $iconMapping = array(
-                        'pdf' => 'icon-pdf',
-                        'doc' => 'icon-doc',
-                        'txt' => 'icon-txt',
-                        'zip' => 'icon-zip',
-                        'md' => 'icon-md',
-                        'tar' => 'icon-tar',
-                        'gz' => 'icon-gz',
-                        'sh' => 'icon-sh',
+                        // Documents
+                        'pdf' => 'icon-pdf',     // PDF document
+                        'doc' => 'icon-doc',     // Microsoft Word document
+                        'docx' => 'icon-doc',    // Microsoft Word document
+                        'txt' => 'icon-txt',     // Text document
+                        'md' => 'icon-md',       // Markdown document
+                        'ppt' => 'icon-ppt',     // PowerPoint presentation
+                        'pptx' => 'icon-ppt',    // PowerPoint presentation
+                        'xls' => 'icon-xls',     // Excel spreadsheet
+                        'xlsx' => 'icon-xls',    // Excel spreadsheet
+                        'csv' => 'icon-csv',     // CSV file
+                        'rtf' => 'icon-rtf',     // Rich Text Format
+                        // Compressed Files
+                        'zip' => 'icon-zip',     // ZIP archive
+                        'tar' => 'icon-tar',     // TAR archive
+                        'gz' => 'icon-gz',       // GZ archive
+                        'rar' => 'icon-rar',     // RAR archive
+                        // Executable/Scripts
+                        'sh' => 'icon-sh',       // Shell script
+                        'bat' => 'icon-bat',     // Batch script
+                        'exe' => 'icon-exe',     // Executable file
+                        'ps1' => 'icon-ps1',     // PowerShell script
+                        'py' => 'icon-py',       // Python script
+                        'js' => 'icon-js',       // JavaScript code
+                        'php' => 'icon-php',     // PHP script
+                        'java' => 'icon-java',   // Java source code
+                        'cpp' => 'icon-cpp',     // C++ source code
+                        'rb' => 'icon-rb',       // Ruby script
+                        'c' => 'icon-c',         // C source code
+                        'css' => 'icon-css',    // CSS stylesheet
+                        'jsx' => 'icon-jsx',    // JSX (React) code
+                        'html' => 'icon-html',   // HTML markup
+                        // Media Files
+                        'avi' => 'icon-avi',       // AVI video
+                        'mp3' => 'icon-mp3',       // MP3 audio
+                        'jpg' => 'icon-jpg',       // JPEG image
+                        'jpeg' => 'icon-jpg',      // JPEG image
+                        'png' => 'icon-png',       // PNG image
+                        'gif' => 'icon-gif',       // GIF image
+                        'bmp' => 'icon-bmp',       // BMP image
+                        'svg' => 'icon-svg',       // SVG image
+                        'wmv' => 'icon-wmv',       // WMV video
+                        'mov' => 'icon-mov',       // MOV video
+                        'mp4' => 'icon-mp4',       // MP4 video
+                        'flv' => 'icon-flv',       // FLV video
+                        'webm' => 'icon-webm',     // WebM video
+                        'ogg' => 'icon-ogg',       // OGG audio/video
+                        'wav' => 'icon-wav',       // WAV audio
+                        'flac' => 'icon-flac',     // FLAC audio
+                        'aac' => 'icon-aac',       // AAC audio
+                        'wma' => 'icon-wma',       // WMA audio
+                        'm4a' => 'icon-m4a',       // M4A audio
+                        'ogg' => 'icon-ogg',       // OGG audio
+                        'psd' => 'icon-psd',       // Adobe Photoshop document
+                        'ai' => 'icon-ai',         // Adobe Illustrator document
+                        'eps' => 'icon-eps',       // EPS vector image
+                        'indd' => 'icon-indd',     // Adobe InDesign document
+                        'raw' => 'icon-raw',       // RAW image
+                        'tiff' => 'icon-tiff',     // TIFF image
+                        'webp' => 'icon-webp',     // WebP image
+                        'mkv' => 'icon-mkv',       // MKV video
+                        'flac' => 'icon-flac',     // FLAC audio
+                        'ape' => 'icon-ape',       // APE audio
+                        'ogg' => 'icon-ogg',       // OGG audio
                         // Add more mappings as needed
-                    );
+                    );                    
 
                     echo '<ul class="folder-contents">';
+
                     foreach ($files as $file) {
                         // Exclude dot files and index files
                         if ($file != '.' && $file != '..' && !in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), $notAllowedExtensions)) {
@@ -143,8 +250,10 @@
                             }
                         }
                     }
+
                     echo '</ul>';
                 }
+
                 $directory = './'; // Specify the directory you want to list
                 listDirectory($directory);
             ?>
