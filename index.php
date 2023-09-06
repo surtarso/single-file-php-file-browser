@@ -257,7 +257,7 @@
                         if ($file != '.' && $file != '..' && !in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), $notAllowedExtensions)) {
                             $path = $directory . '/' . $file;
                             if (is_dir($path)) {
-                                echo '<li><i class="icon-folder"></i><a href="' . $file . '">' . $file . '</a>';
+                                echo '<li style="color: whitesmoke;"><i class="icon-folder"></i>' . $file;
                                 listDirectory($path); // Recursively list contents of subfolder
                                 echo '</li>';
                             } else {
