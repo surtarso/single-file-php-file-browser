@@ -60,6 +60,9 @@
         ul.folder-contents {
             margin-left: 20px; /* Indent folder contents */
         }
+        ul.subfolder-contents{
+            display: none; /* Start folded (hidden) */
+        }
         .file-size {
             float: right;
             padding: 0 15px;
@@ -78,9 +81,15 @@
             color: white;
         }
         /* Folder icon style */
-        .icon-folder::before {
+        .icon-folder-open::before {
             content: "\f07c";
             color: #428bca;
+            cursor: pointer;
+        }
+        .icon-folder-closed::before {
+            content: "\f07b";
+            color: #428bca;
+            cursor: pointer;
         }
         /* Icons for specific file types mapping */
         /* Documents */
@@ -257,8 +266,10 @@
                         if ($file != '.' && $file != '..' && !in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), $notAllowedExtensions)) {
                             $path = $directory . '/' . $file;
                             if (is_dir($path)) {
-                                echo '<li style="color: whitesmoke;"><i class="icon-folder"></i>' . $file;
+                                echo '<li style="color: whitesmoke;"><i class="icon-folder-closed" onclick="toggleFolderContents(this)"></i>' . $file;
+                                echo '<ul class="subfolder-contents">'; // Open a new subfolder list
                                 listDirectory($path); // Recursively list contents of subfolder
+                                echo '</ul>'; // Close the subfolder list
                                 echo '</li>';
                             } else {
                                 $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
@@ -287,4 +298,18 @@
         </ul>
     </div>
 </body>
+<script>
+    function toggleFolderContents(icon) {
+        var ul = icon.parentElement.querySelector('.subfolder-contents');
+        if (ul.style.display === 'block') {
+            ul.style.display = 'none';
+            icon.classList.remove('icon-folder-open');
+            icon.classList.add('icon-folder-closed');
+        } else {
+            ul.style.display = 'block';
+            icon.classList.remove('icon-folder-closed');
+            icon.classList.add('icon-folder-open');
+        }
+    }
+</script>
 </html>
