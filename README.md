@@ -1,8 +1,8 @@
-# Single File PHP Directory Listing
+# Single File PHP File Browser
 
 ## Introduction
 
-The **Single File PHP Directory Listing** is a lightweight and straightforward project that provides a web-based directory listing for the files contained within a specified directory. This project serves as a quick and easy way to share files or documents with others via a web interface.
+The **Single File PHP File Browser** is a lightweight and straightforward project that provides a web-based directory listing for the files contained within a specified directory. This project serves as a quick and easy way to share files or documents with others via a web interface.
 
 ## Functionality
 
@@ -21,7 +21,7 @@ The project offers the following functionalities:
 
 ## Usage
 
-To use the Single File PHP Directory Listing, follow these simple steps:
+To use the Single File PHP File Browser, follow these simple steps:
 
 1. Download the `index.php` file from this project.
 
