@@ -16,6 +16,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Dynamic page title with capitalized folder name -->
     <title><?php echo $headerTitle; ?></title>
     <style>
         body {
@@ -179,6 +180,7 @@
 </head>
 <body>
     <header>
+        <!-- Dynamic header title with capitalized folder name -->
         <h1>List of <?php echo $headerTitle; ?></h1>
     </header>
     <div class="content">
@@ -292,6 +294,7 @@
                     echo '</ul>';
                 }
                 
+                // Folder content count
                 function countItemsInDirectory($directory) {
                     $items = scandir($directory);
                     $count = 0;
@@ -312,6 +315,7 @@
                     return $count;
                 }
 
+                // Human readable file sizes
                 function formatFileSize($size) {
                     $units = ['B', 'KB', 'MB', 'GB', 'TB'];
 
@@ -328,13 +332,18 @@
     </div>
 </body>
 <script>
+    // Javascript to toggle folder contents visibility
     function toggleFolderContents(icon) {
+        // Find the subfolder contents list associated with the clicked folder icon
         var ul = icon.parentElement.querySelector('.subfolder-contents');
+        // Check if the subfolder contents list is currently visible
         if (ul.style.display === 'block') {
+            // If visible, hide it
             ul.style.display = 'none';
             icon.classList.remove('icon-folder-open');
             icon.classList.add('icon-folder-closed');
         } else {
+            // If hidden, show it
             ul.style.display = 'block';
             icon.classList.remove('icon-folder-closed');
             icon.classList.add('icon-folder-open');
