@@ -265,18 +265,26 @@
                         // Exclude dot files and index files
                         if ($file != '.' && $file != '..' && !in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), $notAllowedExtensions)) {
                             $path = $directory . '/' . $file;
+
                             if (is_dir($path)) {
-                                echo '<li style="color: whitesmoke;"><i class="icon-folder-closed" onclick="toggleFolderContents(this)"></i>' . $file;
+                                $itemCount = countItemsInDirectory($path); // Count the number of items (files and subfolders) in the current folder
+
+                                echo '<li style="color: whitesmoke;">';
+                                echo '<i class="icon-folder-closed" onclick="toggleFolderContents(this)"></i>' . $file . ' <span class="file-size">' . $itemCount . ' item(s)</span>';
                                 echo '<ul class="subfolder-contents">'; // Open a new subfolder list
                                 listDirectory($path); // Recursively list contents of subfolder
                                 echo '</ul>'; // Close the subfolder list
                                 echo '</li>';
+
                             } else {
                                 $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
                                 $iconClass = isset($iconMapping[$extension]) ? $iconMapping[$extension] : 'icon-default'; // Default to 'icon-default' if no mapping found
                                 $filePath = $directory . '/' . $file;
                                 $fileSize = formatFileSize(filesize($filePath)); // Get and format the file size
-                                echo '<li style="border-bottom: 1px solid #1a1b1a;"><i class="' . $iconClass . '"></i><a href="' . $directory . '/' . $file . '">' . $file . '</a> <span class="file-size">' . $fileSize . '</span></li>';
+
+                                echo '<li style="border-bottom: 1px solid #1a1b1a;">';
+                                echo '<i class="' . $iconClass . '"></i><a href="' . $directory . '/' . $file . '">' . $file . '</a> <span class="file-size">' . $fileSize . '</span>';
+                                echo '</li>';
                             }
                         }
                     }
@@ -284,8 +292,29 @@
                     echo '</ul>';
                 }
                 
+                function countItemsInDirectory($directory) {
+                    $items = scandir($directory);
+                    $count = 0;
+
+                    foreach ($items as $item) {
+                        // Exclude dot files and index files
+                        if ($item != '.' && $item != '..') {
+                            $path = $directory . '/' . $item;
+                            if (is_dir($path)) {
+                                $count++; // Increment the count for subfolders
+                                $count += countItemsInDirectory($path); // Recursively count items in subfolder
+
+                            } else {
+                                $count++; // Increment the count for files
+                            }
+                        }
+                    }
+                    return $count;
+                }
+
                 function formatFileSize($size) {
                     $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+
                     for ($i = 0; $size > 1024; $i++) {
                         $size /= 1024;
                     }
