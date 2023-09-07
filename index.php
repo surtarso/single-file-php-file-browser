@@ -15,12 +15,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Dynamic page title with capitalized folder name -->
     <title><?php echo $headerTitle; ?></title>
     <style>
         body {
-            font-family: "Font Awesome 5 Free", Arial, sans-serif;
+            font-family: Arial, sans-serif;
             font-style: normal;
             margin: 0;
             padding: 0;
@@ -71,7 +71,7 @@
         }
         /* Common styles for all icons */
         i {
-            font-family: "Font Awesome 5 Free";
+            font-family: "Font Awesome 6 Free";
             font-style: normal;
             margin-right: 15px;
             margin-left: 5px;
@@ -92,48 +92,143 @@
             color: #428bca;
             cursor: pointer;
         }
-        /* Icons for specific file types mapping */
+        /* Generated CSS for file extension icons */
         /* Documents */
-        .icon-pdf::before,
+        .icon-pdf::before {
+            content: "\f1c1"; /* PDF document */
+            color: #FF5733; /* Reddish-Orange */
+        }
+
         .icon-doc::before,
-        .icon-docx::before,
-        .icon-ppt::before,
-        .icon-pptx::before,
-        .icon-xls::before,
-        .icon-xlsx::before,
-        .icon-csv::before,
-        .icon-rtf::before {
-            content: "\f1c1"; /* PDF document, Word document, PowerPoint presentation, Excel spreadsheet, CSV file, Rich Text Format */
-            color: #FF9800;
+        .icon-docx::before {
+            content: "\f15c"; /* File Alt (for Word documents) */
+            color: #3498db; /* Blue */
         }
-        .icon-txt::before,
+
+        .icon-txt::before {
+            content: "\f0f6"; /* File Alt (for Text documents) */
+            color: #2ecc71; /* Green */
+        }
+
         .icon-md::before {
-            content: "\f15c"; /* Text document, Markdown document */
-            color: #4CAF50;
+            content: "\f15c"; /* File Alt (for Markdown documents) */
+            color: #2ecc71; /* Green */
         }
+
+        .icon-ppt::before,
+        .icon-pptx::before {
+            content: "\f1c4"; /* PowerPoint presentation */
+            color: #e74c3c; /* Red */
+        }
+
+        .icon-xls::before,
+        .icon-xlsx::before {
+            content: "\f1c3"; /* Excel spreadsheet */
+            color: #f1c40f; /* Yellow */
+        }
+
+        .icon-csv::before {
+            content: "\f1c0"; /* CSV file */
+            color: #f39c12; /* Orange */
+        }
+
+        .icon-rtf::before {
+            content: "\f15c"; /* File Alt (for RTF documents) */
+            color: #9b59b6; /* Purple */
+        }
+
         /* Compressed Files */
-        .icon-zip::before,
-        .icon-rar::before,
-        .icon-tar::before,
+        .icon-zip::before {
+            content: "\f1c6"; /* Archive */
+            color: #1abc9c; /* Turquoise */
+        }
+
+        .icon-tar::before {
+            content: "\f1c6"; /* Archive (similar to ZIP) */
+            color: #1abc9c; /* Turquoise */
+        }
+
         .icon-gz::before {
-            content: "\f1c6"; /* ZIP archive, RAR archive (similar to ZIP) */
-            color: #E91E63;
+            content: "\f1c6"; /* Archive (similar to ZIP) */
+            color: #1abc9c; /* Turquoise */
         }
+
+        .icon-rar::before {
+            content: "\f1c6"; /* Archive (similar to ZIP) */
+            color: #1abc9c; /* Turquoise */
+        }
+
         /* Executable/Scripts */
-        .icon-sh::before,
-        .icon-bat::before,
-        .icon-exe::before,
-        .icon-ps1::before,
-        .icon-py::before,
-        .icon-js::before,
-        .icon-php::before,
-        .icon-java::before,
-        .icon-cpp::before,
-        .icon-rb::before,
-        .icon-c::before {
-            content: "\f017"; /* Shell script, Batch script, Executable file, PowerShell script, Python script, JavaScript code, PHP script, Java source code, C++ source code, Ruby script, C source code */
-            color: gray; 
+        .icon-sh::before {
+            content: "\f02e"; /* Terminal */
+            color: #f39c12; /* Orange */
         }
+
+        .icon-bat::before {
+            content: "\f02e"; /* Terminal */
+            color: #f39c12; /* Orange */
+        }
+
+        .icon-exe::before {
+            content: "\f17b"; /* Cog */
+            color: #f39c12; /* Orange */
+        }
+
+        .icon-ps1::before {
+            content: "\f02e"; /* Terminal */
+            color: #f39c12; /* Orange */
+        }
+
+        .icon-py::before {
+            content: "\f02d"; /* Python */
+            color: #3498db; /* Blue */
+        }
+
+        .icon-js::before {
+            content: "\f023"; /* Code */
+            color: #f39c12; /* Orange */
+        }
+
+        .icon-php::before {
+            content: "\f069"; /* PHP */
+            color: #f39c12; /* Orange */
+        }
+
+        .icon-java::before {
+            content: "\f0b1"; /* Coffee */
+            color: #f39c12; /* Orange */
+        }
+
+        .icon-cpp::before {
+            content: "\f0b2"; /* Code Branch */
+            color: #f39c12; /* Orange */
+        }
+
+        .icon-rb::before {
+            content: "\f178"; /* Gem */
+            color: #f39c12; /* Orange */
+        }
+
+        .icon-c::before {
+            content: "\f1c3"; /* Cogs */
+            color: #f39c12; /* Orange */
+        }
+
+        .icon-css::before {
+            content: "\f219"; /* CSS3 */
+            color: #e74c3c; /* Red */
+        }
+
+        .icon-jsx::before {
+            content: "\f288"; /* React */
+            color: #f39c12; /* Orange */
+        }
+
+        .icon-html::before {
+            content: "\f13b"; /* Html5 */
+            color: #e74c3c; /* Red */
+        }
+
         /* Media Files */
         .icon-avi::before,
         .icon-wmv::before,
@@ -141,9 +236,10 @@
         .icon-mp4::before,
         .icon-flv::before,
         .icon-webm::before {
-            content: "\f03d"; /* AVI video, WMV video, MOV video, MP4 video, FLV video, WebM video */
-            color: #E91E63;
+            content: "\f008"; /* Film */
+            color: #e74c3c; /* Red */
         }
+
         .icon-mp3::before,
         .icon-ogg::before,
         .icon-wav::before,
@@ -152,9 +248,10 @@
         .icon-wma::before,
         .icon-m4a::before,
         .icon-ape::before {
-            content: "\f001"; /* MP3 audio, OGG audio/video, WAV audio, FLAC audio, AAC audio, WMA audio, M4A audio, APE audio */
-            color: #FF9800;
+            content: "\f28b"; /* Music */
+            color: #2ecc71; /* Green */
         }
+
         .icon-jpg::before,
         .icon-jpeg::before,
         .icon-png::before,
@@ -163,19 +260,24 @@
         .icon-svg::before,
         .icon-tiff::before,
         .icon-webp::before {
-            content: "\f1c5"; /* JPEG image, PNG image, GIF image, BMP image, SVG image, TIFF image, WebP image */
-            color: #FF9800;
+            content: "\f03e"; /* Image */
+            color: #e74c3c; /* Red */
         }
+
         .icon-psd::before,
         .icon-ai::before,
         .icon-eps::before,
         .icon-indd::before,
         .icon-raw::before,
-        .icon-mkv::before {
-            content: "\f03d"; /* Adobe Photoshop document, Adobe Illustrator document, EPS vector image, Adobe InDesign document, RAW image, MKV video (similar to other video formats) */
-            color: #FF9800;
+        .icon-tiff::before,
+        .icon-webp::before,
+        .icon-mkv::before,
+        .icon-ape::before {
+            content: "\f03d"; /* Image */
+            color: #e74c3c; /* Red */
         }
-        /* Add more mappings as needed */
+
+        /* Add more CSS rules for other file extensions and their colors here */
     </style>
 </head>
 <body>
