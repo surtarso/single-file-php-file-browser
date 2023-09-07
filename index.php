@@ -186,8 +186,27 @@
     <div class="content">
         <ul>
             <?php
-                function listDirectory($directory) {
+            // Define custom error messages
+            $errorMessages = [
+                'directory_not_found' => 'The specified directory does not exist.',
+                'directory_permission_denied' => 'Permission denied. You do not have access to this directory.',
+                'file_not_found' => 'The requested file does not exist.',
+                'file_permission_denied' => 'Permission denied. You do not have access to this file.',
+            ];
+            function listDirectory($directory) {
+                try{
+                    // Attempt to scan the directory
                     $files = scandir($directory);
+
+                    // Check if scandir succeeded
+                    if ($files === false) {
+                        throw new Exception($errorMessages['directory_not_found']);
+                    }
+
+                    // Check if the directory is not readable (permission denied)
+                    if (!is_readable($directory)) {
+                        throw new Exception($errorMessages['directory_permission_denied']);
+                    }
 
                     // Create an array to store the file extensions
                     $notAllowedExtensions = array('php', 'swp');
@@ -282,7 +301,24 @@
                                 $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
                                 $iconClass = isset($iconMapping[$extension]) ? $iconMapping[$extension] : 'icon-default'; // Default to 'icon-default' if no mapping found
                                 $filePath = $directory . '/' . $file;
-                                $fileSize = formatFileSize(filesize($filePath)); // Get and format the file size
+                                
+                                if (!file_exists($filePath)) {
+                                    throw new Exception($errorMessages['file_not_found']);
+                                }
+
+                                try {
+                                    $fileSize = formatFileSize(filesize($filePath)); // Get and format the file size
+
+                                    if ($fileSize === false) {
+                                        throw new Exception($errorMessages['file_permission_denied']);
+                                    }
+
+                                } catch (Exception $e) {
+                                    /// Handle the filesize() error
+                                    echo '<li style="border-bottom: 1px solid #1a1b1a;">';
+                                    echo '<i class="' . $iconClass . '"></i>' . $file . ' <span class="file-size">' . $e->getMessage() . '</span>';
+                                    echo '</li>';
+                                }
 
                                 echo '<li style="border-bottom: 1px solid #1a1b1a;">';
                                 echo '<i class="' . $iconClass . '"></i><a href="' . $directory . '/' . $file . '">' . $file . '</a> <span class="file-size">' . $fileSize . '</span>';
@@ -292,41 +328,47 @@
                     }
 
                     echo '</ul>';
+
+                } catch (Exception $e) {
+                    // Handle the scandir() error
+                    echo '<p style="color: red;">' . $e->getMessage() . '</p>';
                 }
+
+            }
                 
-                // Folder content count
-                function countItemsInDirectory($directory) {
-                    $items = scandir($directory);
-                    $count = 0;
+            // Folder content count
+            function countItemsInDirectory($directory) {
+                $items = scandir($directory);
+                $count = 0;
 
-                    foreach ($items as $item) {
-                        // Exclude dot files and index files
-                        if ($item != '.' && $item != '..') {
-                            $path = $directory . '/' . $item;
-                            if (is_dir($path)) {
-                                $count++; // Increment the count for subfolders
-                                $count += countItemsInDirectory($path); // Recursively count items in subfolder
+                foreach ($items as $item) {
+                    // Exclude dot files and index files
+                    if ($item != '.' && $item != '..') {
+                        $path = $directory . '/' . $item;
+                        if (is_dir($path)) {
+                            $count++; // Increment the count for subfolders
+                            $count += countItemsInDirectory($path); // Recursively count items in subfolder
 
-                            } else {
-                                $count++; // Increment the count for files
-                            }
+                        } else {
+                            $count++; // Increment the count for files
                         }
                     }
-                    return $count;
                 }
+                return $count;
+            }
 
-                // Human readable file sizes
-                function formatFileSize($size) {
-                    $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+            // Human readable file sizes
+            function formatFileSize($size) {
+                $units = ['B', 'KB', 'MB', 'GB', 'TB'];
 
-                    for ($i = 0; $size > 1024; $i++) {
-                        $size /= 1024;
-                    }
-                    return round($size, 2) . ' ' . $units[$i];
+                for ($i = 0; $size > 1024; $i++) {
+                    $size /= 1024;
                 }
+                return round($size, 2) . ' ' . $units[$i];
+            }
 
-                $directory = './'; // Specify the directory you want to list
-                listDirectory($directory);
+            $directory = './'; // Specify the directory you want to list
+            listDirectory($directory);
             ?>
         </ul>
     </div>
