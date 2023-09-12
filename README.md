@@ -1,8 +1,20 @@
 # Single File PHP File Browser
 
+## Table of Contents
+1. [Introduction](#introduction)
+2. [Functionality](#functionality)
+3. [Screenshot](#screenshot)
+4. [Usage](#usage)
+5. [Technologies Used](#technologies-used)
+6. [Best Practices](#best-practices)
+7. [Code Explanation](#code-explanation)
+8. [Roadmap](#roadmap)
+
 ## Introduction
 
-The **Single File PHP File Browser** is a lightweight and straightforward project that provides a web-based directory listing for the files contained within a specified directory. This project serves as a quick and easy way to share files or documents with others via a web interface.
+The **Single File PHP File Browser** is a lightweight and straightforward project that provides a web-based directory listing for the files contained within a specified directory. This project serves as a quick and easy way to share files or documents with others via a web interface. This code provides a flexible way to display and customize directory listings, making it useful for creating file browsers and similar applications.
+
+[Back to top](#table-of-contents)
 
 ## Functionality
 
@@ -13,11 +25,15 @@ The project offers the following functionalities:
 - Differentiates between files and folders.
 - Excludes specific file extensions, such as HTML, PHP, SWP, and CSS, from the listing.
 
+[Back to top](#table-of-contents)
+
 ## Screenshot
 
 <p align="center">
     <img src="screenshot.png" alt="Screenshot">
 </p>
+
+[Back to top](#table-of-contents)
 
 ## Usage
 
@@ -31,11 +47,15 @@ To use the Single File PHP File Browser, follow these simple steps:
 
 The `index.php` file will automatically generate a directory listing for the specified folder, allowing you to view and access the contained files and folders via a user-friendly web interface.
 
+[Back to top](#table-of-contents)
+
 ## Technologies Used
 
 - **PHP**: PHP is used to generate the directory listing and handle file system operations.
 - **HTML/CSS**: HTML and CSS are used for the presentation and styling of the directory listing.
 - **Font Awesome**: Font Awesome icons are used to enhance the visual representation of files and folders.
+
+[Back to top](#table-of-contents)
 
 ## Best Practices
 
@@ -44,6 +64,8 @@ To maintain simplicity and effectiveness, this project follows some best practic
 - **Minimalism**: The code is kept minimal and straightforward to ensure ease of understanding and maintenance.
 - **Security**: Security measures are taken by excluding certain file extensions to prevent exposing sensitive files (e.g., PHP files).
 - **User Experience**: The interface is designed for user-friendliness, with clear differentiations between files and folders.
+
+[Back to top](#table-of-contents)
 
 ## Code Explanation
 
@@ -151,4 +173,17 @@ listDirectory($directory);
 
 - Finally, the `listDirectory` function is called with the specified directory to generate the directory listing.
 
-This code provides a flexible way to display and customize directory listings, making it useful for creating file browsers and similar applications.
+[Back to top](#table-of-contents)
+
+## Roadmap
+
+Here are some planned enhancements for the Single File PHP File Browser:
+
+- **Mouse-over File Preview:** Implement mouse-over file preview to display a small preview when hovering over file links.
+- **Bulk Downloads:** Add the ability to select and download multiple files at once.
+- **Pagination:** Implement pagination for directories with a large number of files and folders.
+- **Lazy Loading:** Improve performance by implementing lazy loading for large directories.
+
+Feel free to contribute to the project and help make these enhancements a reality.
+
+[Back to top](#table-of-contents)
