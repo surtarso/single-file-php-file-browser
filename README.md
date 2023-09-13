@@ -184,6 +184,8 @@ Here are some planned enhancements for the Single File PHP File Browser:
 - **Pagination:** Implement pagination for directories with a large number of files and folders.
 - **Lazy Loading:** Improve performance by implementing lazy loading for large directories.
 
+## Contribute
+
 Feel free to contribute to the project and help make these enhancements a reality.
 
 [Back to top](#table-of-contents)
