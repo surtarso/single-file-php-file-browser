@@ -53,6 +53,7 @@ The `index.php` file will automatically generate a directory listing for the spe
 
 - **PHP**: PHP is used to generate the directory listing and handle file system operations.
 - **HTML/CSS**: HTML and CSS are used for the presentation and styling of the directory listing.
+- **JavaScript** to implement client-side features.
 - **Font Awesome**: Font Awesome icons are used to enhance the visual representation of files and folders.
 
 [Back to top](#table-of-contents)
