@@ -23,7 +23,7 @@ The project offers the following functionalities:
 - Lists files and folders contained within a specified directory.
 - Allows users to navigate through the directory structure.
 - Differentiates between files and folders.
-- Excludes specific file extensions, such as HTML, PHP, SWP, and CSS, from the listing.
+- Excludes specific file extensions, such as PHP and SWP from the listing.
 
 [Back to top](#table-of-contents)
 
