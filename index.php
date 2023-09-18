@@ -32,6 +32,16 @@
             text-align: center;
             padding: 20px 0;
         }
+	footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            background-color: #333;
+            color: #fff;
+            padding: 0;
+        }
         h1 {
             margin: 0;
             font-size: 36px;
@@ -474,6 +484,12 @@
             ?>
         </ul>
     </div>
+    <footer>
+        <p>
+            Single File PHP File Browser by <a href="https://tarsogalvao.ddns.net" target="_blank">Tarso Galvão</a>.
+            <a href="https://github.com/surtarso/single-file-php-file-browser" target="_blank">More info</a>.
+        </p>
+    </footer>
 </body>
 <script>
     // Javascript to toggle folder contents visibility
