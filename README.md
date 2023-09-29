@@ -43,7 +43,7 @@ To use the Single File PHP File Browser, follow these simple steps:
 
 2. Place the `index.php` file in the folder you want to share on the web.
 
-3. Access the folder using a web browser. You can do this by entering the folder's URL in your web browser's address bar. For example, if you placed `index.php` in a folder called "MyFiles" on your web server, you would access it like this: `http://yourdomain.com/MyFiles/`.
+3. Access the folder using a web browser. You can do this by entering the folder's URL in your web browser's address bar. For example, if you placed `index.php` in a folder called "stuff" on your web server, you would access it like this: `http://yourdomain.com/stuff/`.
 
 The `index.php` file will automatically generate a directory listing for the specified folder, allowing you to view and access the contained files and folders via a user-friendly web interface.
 
@@ -53,7 +53,7 @@ The `index.php` file will automatically generate a directory listing for the spe
 
 - **PHP**: PHP is used to generate the directory listing and handle file system operations.
 - **HTML/CSS**: HTML and CSS are used for the presentation and styling of the directory listing.
-- **JavaScript** to implement client-side features.
+- **JavaScript:** to implement client-side features.
 - **Font Awesome**: Font Awesome icons are used to enhance the visual representation of files and folders.
 
 [Back to top](#table-of-contents)
