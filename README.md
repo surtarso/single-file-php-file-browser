@@ -184,7 +184,7 @@ Here are some planned enhancements for the Single File PHP File Browser:
 - **Bulk Downloads:** Add the ability to select and download multiple files at once.
 - **Pagination:** Implement pagination for directories with a large number of files and folders.
 - **Lazy Loading:** Improve performance by implementing lazy loading for large directories.
-- **Refactor** Rewrite code into a class based design.
+- **Refactor:** Rewrite code into a class based design.
 
 ## Contribute
 
