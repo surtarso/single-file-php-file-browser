@@ -85,6 +85,7 @@
             font-style: normal;
             margin-right: 15px;
             margin-left: 5px;
+            cursor: pointer;
         }
         /* Default fallback icon style */
         .icon-default::before {
@@ -433,7 +434,7 @@
                                 }
 
                                 echo '<li style="border-bottom: 1px solid #1a1b1a;">';
-                                echo '<i class="' . $iconClass . '"></i><a href="' . $directory . '/' . $file . '">' . $file . '</a> <span class="file-size">' . $fileSize . '</span>';
+                                echo '<i class="' . $iconClass . '" onclick="getFile(this)"></i><a href="' . $directory . '/' . $file . '" download>' . $file . '</a> <span class="file-size">' . $fileSize . '</span>';
                                 echo '</li>';
                             }
                         }
@@ -508,6 +509,13 @@
             icon.classList.remove('icon-folder-closed');
             icon.classList.add('icon-folder-open');
         }
+    }
+    // Function to download files using the icon
+    function getFile(icon) {
+        const link = document.createElement('a');
+        link.href = icon.nextSibling.href;
+        link.setAttribute('download', '');
+        link.click();
     }
 </script>
 </html>
