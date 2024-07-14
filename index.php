@@ -307,6 +307,7 @@
                 'file_permission_denied' => 'Permission denied. You do not have access to this file.',
             ];
             function listDirectory($directory) {
+                global $errorMessages;
                 try{
                     // Attempt to scan the directory
                     $files = scandir($directory);
