@@ -287,7 +287,7 @@
             content: "\f03d"; /* Image */
             color: #e74c3c; /* Red */
         }
-
+        
         /* Add more CSS rules for other file extensions and their colors here */
     </style>
 </head>
@@ -297,6 +297,12 @@
         <h1>List of <?php echo $headerTitle; ?></h1>
     </header>
     <div class="content">
+        <!-- --------- placeholder for multiple downloads --------- -->
+        <!-- <header>
+            <button id="toggleCheckboxes">Toggle Checkboxes</button>
+            <button id="downloadSelected">Download Selected</button>
+        </header> -->
+        <!-- ------------------------------------------------------ -->
         <ul>
             <?php
             // Define custom error messages
@@ -414,7 +420,7 @@
 
                             $dlPath = $currentLocation . substr($relPath, 1); # remove the '.' at the beginning
             
-                            # rdebugging paths
+                            # debugging paths
                             # echo "file: " . $file . "<br>";
                             # echo "relPath: " . $relPath . "<br>";
                             # echo "directory: " . $directory . "<br>";
@@ -453,6 +459,9 @@
                                     echo '</li>';
                                 }
 
+                                # ------------------  Placeholder for multiple downloads (checkboxes)  --------------------------
+                                #echo '<input type="checkbox" name="files[]" value="' . $dlPath . '" style="display: none;">';
+                                # -----------------------------------------------------------------------------------------------
                                 echo '<li style="border-bottom: 1px solid #1a1b1a;">';
                                 echo '<i class="' . $iconClass . '" onclick="getFile(this)"></i><a href="' . $dlPath . '" download>' . $file . '</a> <span class="file-size">' . $fileSize . '</span>';
                                 echo '</li>';
@@ -513,7 +522,27 @@
     </footer>
 </body>
 <script>
-    // Javascript to toggle folder contents visibility
+    // ---------------  Placeholder for multiple downloads ------------------------
+    //const toggleCheckboxesButton = document.getElementById('toggleCheckboxes');
+    //const downloadSelectedButton = document.getElementById('downloadSelected');
+
+    // Toggle checkbox button
+    // toggleCheckboxesButton.addEventListener('click', () => {
+    //     const checkboxes = document.querySelectorAll('li input[type="checkbox"]');
+    //     checkboxes.forEach(checkbox => {
+    //         checkbox.style.display = checkbox.style.display === 'none' ? 'inline-block' : 'none';
+    //     });
+    // });
+
+    // Download checked button
+    // downloadSelectedButton.addEventListener('click', () => {
+    //     const selectedFiles = Array.from(document.querySelectorAll('li input[type="checkbox"]:checked'))
+    //         .map(checkbox => checkbox.value);
+    //     // download logic here, using selectedFiles array
+    // });
+    // ------------------------------------------------------------------------------
+
+    // Function to toggle folder contents visibility
     function toggleFolderContents(icon) {
         // Find the subfolder contents list associated with the clicked folder icon
         var ul = icon.parentElement.querySelector('.subfolder-contents');
