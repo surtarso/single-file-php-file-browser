@@ -398,10 +398,6 @@
 
                     foreach ($files as $file) {
                         // Exclude dot files and index files
-                        if (strpos($file, '.') == 0 && !is_dir($file)) {
-                            // Remove all files starting with '.' that are not directories
-                            continue;
-                        }
                         if ($file != '.' && $file != '..' && !in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), $notAllowedExtensions)) {
                             # $directory is some kind of path that most-likly ends with a '/', so we need to remove it if it is there
                             # Now the path is normalized and we can add the file to it
