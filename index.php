@@ -399,15 +399,34 @@
                     foreach ($files as $file) {
                         // Exclude dot files and index files
                         if ($file != '.' && $file != '..' && !in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), $notAllowedExtensions)) {
-                            $path = $directory . '/' . $file;
+                            # $directory is some kind of path that most-likly ends with a '/', so we need to remove it if it is there
+                            # Now the path is normalized and we can add the file to it
+                            if (substr($directory, -1) == '/') {
+                                $directory = substr($directory, 0, -1);
+                            }
 
-                            if (is_dir($path)) {
-                                $itemCount = countItemsInDirectory($path); // Count the number of items (files and subfolders) in the current folder
+                            # relative path to the file from this script
+                            $relPath = $directory . '/' . $file;
+
+                            # the actual download paths to this file (relative to the server root) might be different though, 
+                            # So we need to get the current scripts location and then add the relative path to it ( removing the './' at the beginning )
+                            $currentLocation = dirname($_SERVER['SCRIPT_NAME']);
+
+                            $dlPath = $currentLocation . substr($relPath, 1); # remove the '.' at the beginning
+            
+                            # rdebugging paths
+                            # echo "file: " . $file . "<br>";
+                            # echo "relPath: " . $relPath . "<br>";
+                            # echo "directory: " . $directory . "<br>";
+                            # echo "dlPath: " . $dlPath . "<br>";
+
+                            if (is_dir($relPath)) {
+                                $itemCount = countItemsInDirectory($relPath); // Count the number of items (files and subfolders) in the current folder
 
                                 echo '<li style="color: whitesmoke;">';
                                 echo '<i class="icon-folder-closed" onclick="toggleFolderContents(this)"></i>' . $file . ' <span class="file-size">' . $itemCount . ' item(s)</span>';
                                 echo '<ul class="subfolder-contents">'; // Open a new subfolder list
-                                listDirectory($path); // Recursively list contents of subfolder
+                                listDirectory($relPath); // Recursively list contents of subfolder
                                 echo '</ul>'; // Close the subfolder list
                                 echo '</li>';
 
@@ -435,7 +454,7 @@
                                 }
 
                                 echo '<li style="border-bottom: 1px solid #1a1b1a;">';
-                                echo '<i class="' . $iconClass . '" onclick="getFile(this)"></i><a href="' . $directory . '/' . $file . '" download>' . $file . '</a> <span class="file-size">' . $fileSize . '</span>';
+                                echo '<i class="' . $iconClass . '" onclick="getFile(this)"></i><a href="' . $dlPath . '" download>' . $file . '</a> <span class="file-size">' . $fileSize . '</span>';
                                 echo '</li>';
                             }
                         }
