@@ -423,7 +423,7 @@
                             # So we need to get the current scripts location and then add the relative path to it ( removing the './' at the beginning )
                             $currentLocation = dirname($_SERVER['SCRIPT_NAME']);
 
-                            $dlPath = $currentLocation . substr($relPath, 1); # remove the '.' at the beginning
+                            # $dlPath = $currentLocation . substr($relPath, 1); # remove the '.' at the beginning
             
                             # debugging paths
                             # echo "file: " . $file . "<br>";
@@ -475,7 +475,7 @@
                                 #echo '<input type="checkbox" name="files[]" value="' . $dlPath . '" style="display: none;">';
                                 # -----------------------------------------------------------------------------------------------
                                 echo '<li style="border-bottom: 1px solid #1a1b1a;">';
-                                echo '<i class="' . $iconClass . '" onclick="getFile(this)"></i><a href="' . $dlPath . '" download>' . $file . '</a> <span class="file-size">' . $fileSize . '</span>';
+                                echo '<i class="' . $iconClass . '" onclick="getFile(this)"></i><a href="' . $relPath . '" download>' . $file . '</a> <span class="file-size">' . $fileSize . '</span>';
                                 echo '</li>';
                             }
                         }
