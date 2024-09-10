@@ -421,8 +421,8 @@
 
                             # the actual download paths to this file (relative to the server root) might be different though, 
                             # So we need to get the current scripts location and then add the relative path to it ( removing the './' at the beginning )
-                            $currentLocation = dirname($_SERVER['SCRIPT_NAME']);
-
+                            
+			    # $currentLocation = dirname($_SERVER['SCRIPT_NAME']);
                             # $dlPath = $currentLocation . substr($relPath, 1); # remove the '.' at the beginning
             
                             # debugging paths
