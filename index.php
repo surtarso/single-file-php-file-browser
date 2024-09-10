@@ -1,4 +1,7 @@
 <?php
+    // Define a default title if there is none from URL
+    $defaultTitle = "Stuff";  // "My default title"
+
     // Get the current URL
     $currentUrl = $_SERVER['REQUEST_URI'];
 
@@ -17,7 +20,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Dynamic page title with capitalized folder name -->
-    <title><?php echo $headerTitle; ?></title>
+    <title><?php echo isset($headerTitle) && !empty($headerTitle) ? $headerTitle : $defaultTitle; ?></title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -294,7 +297,7 @@
 <body>
     <header>
         <!-- Dynamic header title with capitalized folder name -->
-        <h1>List of <?php echo $headerTitle; ?></h1>
+        <h1>List of <?php echo isset($headerTitle) && !empty($headerTitle) ? $headerTitle : $defaultTitle; ?></h1>
     </header>
     <div class="content">
         <!-- --------- placeholder for multiple downloads --------- -->
