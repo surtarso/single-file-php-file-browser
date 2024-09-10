@@ -1,4 +1,8 @@
 <?php
+    // Extracts the name from the URL and capitalizes it for the page title and header.
+    // If no folder is found, uses the default title set in $defaultTitle.
+    // ex.: mydomain.com/myFolder will use captalized MyFolder.
+
     // Define a default title if there is none from URL
     $defaultTitle = "Stuff";  // "My default title"
 
@@ -11,6 +15,11 @@
 
     // Capitalize the first letter of the last segment
     $headerTitle = ucfirst($lastSegment);
+
+    // Define a file to be used as hyperlink if found in other folders
+    // multiples copies of this file can be copied to child folders or
+    // you can use any file you want, like index.html for a webpage.
+    $hyperlinkFile = 'index.php';
 ?>
 
 <!DOCTYPE html>
@@ -19,7 +28,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- favicon placeholder -->
     <link rel="shortcut icon" type="image/x-icon" href="data:image/x-icon;base64,c2t1bGw">
     <!-- Dynamic page title with capitalized folder name -->
     <title><?php echo isset($headerTitle) && !empty($headerTitle) ? $headerTitle : $defaultTitle; ?></title>
@@ -422,7 +430,7 @@
                             # the actual download paths to this file (relative to the server root) might be different though, 
                             # So we need to get the current scripts location and then add the relative path to it ( removing the './' at the beginning )
                             
-			    # $currentLocation = dirname($_SERVER['SCRIPT_NAME']);
+                            # $currentLocation = dirname($_SERVER['SCRIPT_NAME']);
                             # $dlPath = $currentLocation . substr($relPath, 1); # remove the '.' at the beginning
             
                             # debugging paths
@@ -434,20 +442,20 @@
                             if (is_dir($relPath)) {
                                 $itemCount = countItemsInDirectory($relPath); // Count the number of items (files and subfolders) in the current folder
 
-                                echo '<li style="color: whitesmoke;">';
-				
-				// only add hyperlink icon to folder names if the target folder contains an index.php file  
-                                if (file_exists($relPath . '/index.php')) {
+                                echo '<li style="color: orange;">';
+
+                                // only add hyperlink icon to folder names if the target folder contains an index.php file  
+                                if (file_exists($relPath . '/' . $hyperlinkFile)) {
                                     echo '<i class="icon-folder-closed" onclick="toggleFolderContents(this)"></i> ' . $file . ' <a href="' . $relPath . '"> <i class="fas fa-xs fa-external-link-alt"></i> </a> <span class="file-size">' . $itemCount . ' item(s)</span>';
                                 } else {
                                     echo '<i class="icon-folder-closed" onclick="toggleFolderContents(this)"></i> ' . $file . ' <span class="file-size">' . $itemCount . ' item(s)</span>';
                                 }
-				    
+
                                 echo '<ul class="subfolder-contents">'; // Open a new subfolder list
                                 listDirectory($relPath); // Recursively list contents of subfolder
                                 echo '</ul>'; // Close the subfolder list
                                 echo '</li>';
-
+                                
                             } else {
                                 $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
                                 $iconClass = isset($iconMapping[$extension]) ? $iconMapping[$extension] : 'icon-default'; // Default to 'icon-default' if no mapping found
@@ -477,6 +485,7 @@
                                 echo '<li style="border-bottom: 1px solid #1a1b1a;">';
                                 echo '<i class="' . $iconClass . '" onclick="getFile(this)"></i><a href="' . $relPath . '" download>' . $file . '</a> <span class="file-size">' . $fileSize . '</span>';
                                 echo '</li>';
+                                
                             }
                         }
                     }
@@ -571,6 +580,7 @@
             icon.classList.add('icon-folder-open');
         }
     }
+    
     // Function to download files using the icon
     function getFile(icon) {
         const link = document.createElement('a');
