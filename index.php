@@ -436,9 +436,9 @@
 
                                 echo '<li style="color: whitesmoke;">';
 				
-				// only add hyperlink to folder names if the target folder contains an index.php file
+				// only add hyperlink icon to folder names if the target folder contains an index.php file  
                                 if (file_exists($relPath . '/index.php')) {
-                                    echo '<i class="icon-folder-closed" onclick="toggleFolderContents(this)"></i> <a href="' . $relPath . '" color="#acfffc">' . $file . '</a> <span class="file-size">' . $itemCount . ' item(s)</span>';
+                                    echo '<i class="icon-folder-closed" onclick="toggleFolderContents(this)"></i> ' . $file . ' <a href="' . $relPath . '"> <i class="fas fa-xs fa-external-link-alt"></i> </a> <span class="file-size">' . $itemCount . ' item(s)</span>';
                                 } else {
                                     echo '<i class="icon-folder-closed" onclick="toggleFolderContents(this)"></i> ' . $file . ' <span class="file-size">' . $itemCount . ' item(s)</span>';
                                 }
