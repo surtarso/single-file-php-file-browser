@@ -433,7 +433,14 @@
                                 $itemCount = countItemsInDirectory($relPath); // Count the number of items (files and subfolders) in the current folder
 
                                 echo '<li style="color: whitesmoke;">';
-                                echo '<i class="icon-folder-closed" onclick="toggleFolderContents(this)"></i>' . $file . ' <span class="file-size">' . $itemCount . ' item(s)</span>';
+				
+				// only add hyperlink to folder names if the target folder contains an index.php file
+                                if (file_exists($relPath . '/index.php')) {
+                                    echo '<i class="icon-folder-closed" onclick="toggleFolderContents(this)"></i> <a href="' . $relPath . '" color="#acfffc">' . $file . '</a> <span class="file-size">' . $itemCount . ' item(s)</span>';
+                                } else {
+                                    echo '<i class="icon-folder-closed" onclick="toggleFolderContents(this)"></i> ' . $file . ' <span class="file-size">' . $itemCount . ' item(s)</span>';
+                                }
+				    
                                 echo '<ul class="subfolder-contents">'; // Open a new subfolder list
                                 listDirectory($relPath); // Recursively list contents of subfolder
                                 echo '</ul>'; // Close the subfolder list
