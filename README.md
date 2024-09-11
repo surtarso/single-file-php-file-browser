@@ -18,13 +18,12 @@ The **Single File PHP File Browser** is a lightweight and straightforward projec
 
 ## Functionality
 
-The project offers the following functionalities:
+This project offers the following functionalities:
 
 - Lists files and folders contained within a specified directory.
-- Allows users to navigate through the directory structure.
-- Differentiates between files and folders.
-- Excludes specific file extensions, such as PHP and SWP from the listing.
-- Download single or multiple files at once.
+- Allows users to navigate through the directory tree structure.
+- Download or Upload single or multiple files at once.
+- Excludes specific file extensions and hidden files from the listing.
 
 [Back to top](#table-of-contents)
 
@@ -40,6 +39,8 @@ The project offers the following functionalities:
 
 To use the Single File PHP File Browser, follow these simple steps:
 
+0. Make sure you have PHP enabled on your webserver.
+
 1. Download the `index.php` file from this project.
 
 2. Place the `index.php` file in the folder you want to share on the web.
@@ -47,6 +48,16 @@ To use the Single File PHP File Browser, follow these simple steps:
 3. Access the folder using a web browser. You can do this by entering the folder's URL in your web browser's address bar. For example, if you placed `index.php` in a folder called "stuff" on your web server, you would access it like this: `http://yourdomain.com/stuff/`.
 
 The `index.php` file will automatically generate a directory listing for the specified folder, allowing you to view and access the contained files and folders via a user-friendly web interface.
+### Uploads (Optional)
+To upload files, create a '.users' text file in the same directory as index.php. Each line in the file should contain a 'username:password' pair. This is enought to make the upload section of the page visible.
+However, **storing passwords in a plain text file is highly insecure** as it exposes them to potential breaches. For enhanced security, consider using a more robust password management system or encrypting the password file.
+
+**Recommended Security Measures:**
+
+- Hashing: Store passwords as hashed values using a strong cryptographic algorithm to make them irreversible.
+- Salting: Add a random salt to each hashed password to make it more difficult to crack.
+- Password Encryption: Encrypt the entire password file using a strong encryption algorithm.
+- Password Management Systems: Use dedicated password managers to securely store and manage user credentials.
 
 [Back to top](#table-of-contents)
 
@@ -128,15 +139,6 @@ echo '</ul>';
 ```
 
 - An unordered list (`<ul>`) with the class "folder-contents" is initiated to structure the directory listing.
-
-### Iterating Through Files and Subdirectories
-
-```php
-foreach ($files as $file) {
-    // ...
-}
-```
-
 - A `foreach` loop iterates through the files and directories obtained from `$files`.
 
 ### Handling Subdirectories Recursively
@@ -181,8 +183,10 @@ listDirectory($directory);
 
 Here are some planned enhancements for the Single File PHP File Browser:
 
-- **Mouse-over File Preview:** Implement mouse-over file preview to display a small preview when hovering over file links.
 - ~~**Bulk Downloads:** Add the ability to select and download multiple files at once.~~ [Done]
+- ~~**Bulk Uploads:** Add the ability to select and upload multiple files at once.~~ [Done]
+- ~~**Password:** Secure uploads with user/password.~~ [Done]
+- **Mouse-over File Preview:** Implement mouse-over file preview to display a small preview when hovering over file links.
 - **Pagination:** Implement pagination for directories with a large number of files and folders.
 - **Lazy Loading:** Improve performance by implementing lazy loading for large directories.
 - **Refactor:** Rewrite code into a class based design.
