@@ -3,6 +3,7 @@
     // Extracts the name from the URL and capitalizes it for the page title and header.
     // If no folder is found, uses the default title set in $defaultTitle.
     // ex.: mydomain.com/myFolder will use captalized MyFolder.
+    // ex.: mydomain.com will use the default title set below.
 
     // Define a default title if there is none from URL
     $defaultTitle = "Stuff";  // "My default title"
@@ -22,9 +23,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- fontawesome css link, update as you see fit -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- placeholder tab icon (favicon) so its not empty -->
     <link rel="shortcut icon" type="image/x-icon" href="data:image/x-icon;base64,c2t1bGw">
-    <!-- Dynamic page title with capitalized folder name -->
+    <!-- Dynamic page tab title with capitalized folder name or default title -->
     <title><?php echo isset($headerTitle) && !empty($headerTitle) ? $headerTitle : $defaultTitle; ?></title>
     <style>
         html, body {
@@ -303,23 +306,26 @@
 </head>
 <body>
     <header>
-        <!-- Dynamic header title with capitalized folder name -->
+        <!-- Dynamic header title with capitalized folder name or default title -->
         <h1>List of <?php echo isset($headerTitle) && !empty($headerTitle) ? $headerTitle : $defaultTitle; ?></h1>
     </header>
     <div class="content">
-        <!-- --------- multiple downloads buttons --------- -->
+        <!-- ---------------- multiple downloads control buttons -------------- -->
         <header style="margin-left: 20px; padding-bottom: 0;">
             <div style="display: flex; align-items: center;">
+                <!-- 'Select...' checkbox button -->
                 <input type="checkbox" id="toggleCheckboxes" style="margin-right: 12px;">
                 <label for="toggleCheckboxes">Select...</label>
                 <div id="selectAllCheckbox" style="display: none;">
+                    <!-- 'All' checkbox button -->
                     <input type="checkbox" id="toggleAllCheckboxes" style="margin-left: 12px;">
                     <label for="toggleAllCheckboxes">All</label>
                 </div>
+                <!-- 'Download Selected' button -->
                 <button id="downloadSelected" style="display: none; margin-left: auto; margin-right: 12px;">Download Selected</button>
             </div>
         </header>
-        <!-- ----------------------------------------------- -->
+        <!-- ------------------------------------------------------------------ -->
         <ul>
             <?php
             // Define custom error messages
@@ -335,18 +341,17 @@
                     // Attempt to scan the directory
                     $files = scandir($directory);
 
-                    // Check if scandir succeeded
+                    // Error check: Check if scandir succeeded
                     if ($files === false) {
                         throw new Exception($errorMessages['directory_not_found']);
                     }
-
-                    // Check if the directory is not readable (permission denied)
+                    // Error check: Check if the directory is not readable (permission denied)
                     if (!is_readable($directory)) {
                         throw new Exception($errorMessages['directory_permission_denied']);
                     }
 
                     // Create an array to store the file extensions
-                    // Files this these extensions will not show up
+                    // Files with these extensions will not show up
                     $notAllowedExtensions = array('php', 'swp');
 
                     // Create a mapping of file extensions to CSS icons
@@ -423,7 +428,7 @@
 
                     foreach ($files as $file) {
                         // Exclude dot files and index files
-                        if ($file != '.' && $file != '..' && !in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), $notAllowedExtensions)) {
+                        if ($file != '.' && $file != '..' && !in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), $notAllowedExtensions) && !preg_match('/^\./', $file)) {
                             # $directory is some kind of path that most-likly ends with a '/', so we need to remove it if its there
                             # Now the path is normalized and we can add the file to it
                             if (substr($directory, -1) == '/') {
@@ -457,11 +462,14 @@
                                 // multiples copies of this file can be copied to child folders or
                                 // you can use any file you want, like index.html for a webpage.
                                 if (file_exists($relPath . '/index.php')) {
+                                    // --------- folders: icons, names and item counts + hyperlink to folder
                                     echo '<i class="icon-folder-closed" onclick="toggleFolderContents(this)"></i> ' . $file . ' <a href="' . $relPath . '"> <i class="fas fa-xs fa-external-link-alt"></i> </a> <span class="file-size">' . $itemCount . ' item(s)</span>';
                                 } else {
+                                    // --------- folders: icons, names and item counts (no external link)
                                     echo '<i class="icon-folder-closed" onclick="toggleFolderContents(this)"></i> ' . $file . ' <span class="file-size">' . $itemCount . ' item(s)</span>';
                                 }
 
+                                // ------ Handle SUBFOLDERS
                                 echo '<ul class="subfolder-contents">'; // Open a new subfolder list
                                 listDirectory($relPath); // Recursively list contents of subfolder
                                 echo '</ul>'; // Close the subfolder list
@@ -476,15 +484,12 @@
                                 // Error checking
                                 if (!file_exists($filePath)) {
                                     throw new Exception($errorMessages['file_not_found']);
-                                }
-
-                                try {
+                                } try {
                                     $fileSize = formatFileSize(filesize($filePath)); // Get and format the file size
 
                                     if ($fileSize === false) {
                                         throw new Exception($errorMessages['file_permission_denied']);
                                     }
-
                                 } catch (Exception $e) {
                                     /// Handle the filesize() error
                                     echo '<li style="border-bottom: 1px solid #1a1b1a;">';
@@ -496,7 +501,7 @@
                                 echo '<li style="border-bottom: 1px solid #1a1b1a;">';
                                 # ------------------  multiple downloads (file checkboxes)  --------------------------
                                 echo '<input type="checkbox" name="files[]" value="' . $dlPath . '" style="display: none; margin-right: 12px;">';
-                                # -----------------------------------------------------------------------------------------------
+                                # ---------------------  files: icons, names and sizes  ------------------------------
                                 echo '<i class="' . $iconClass . '" onclick="getFile(this)"></i><a href="' . $relPath . '" download>' . $file . '</a> <span class="file-size">' . $fileSize . '</span>';
                                 echo '</li>';
                                 
@@ -544,8 +549,12 @@
                 return round($size, 2) . ' ' . $units[$i];
             }
 
-            $directory = './'; // Specify the directory you want to list
-            listDirectory($directory);
+            // -------------- START OF THE SCRIPT ----------------------
+            // Specify the directory you want to list, defaults to current
+            // dir, where the folder index.php is placed is the list root.
+            $directory = './';
+            listDirectory($directory); // Start the main loop
+            // ------------------ END OF PHP ---------------------------
             ?>
         </ul>
     </div>
@@ -589,7 +598,7 @@
         // console.log(selectedFiles); // Array [ "/file1.MP4", "/file2.mp3" ]
 
         // if one of the values of selectedFiles == "folder"
-        // remove those values so we can continue with just files
+        // remove those values so we can continue with just real files
         if (selectedFiles.some(file => file.includes("folder"))){
             // create a filtered list without the word "folder"
             var filteredFiles = selectedFiles.filter(file => !file.includes("folder"));
@@ -626,7 +635,7 @@
     });
 
 
-    // Event listener for the "Select All" checkbox (select all files)
+    // Event listener for the "All" checkbox (select all files)
     document.getElementById('toggleAllCheckboxes').addEventListener('change', () => {
         const checkboxes = document.querySelectorAll('li input[type="checkbox"]');
         const isChecked = toggleAllCheckboxes.checked;
@@ -647,7 +656,7 @@
         }
     }
 
-    // Function to toggle checkboxes on folder contents (on folder checkbox)
+    // Function to toggle checkboxes on folder contents (click a folder checkbox)
     function toggleFolderContentsCheckbox(checkbox) {
         // Find the subfolder contents list associated with the clicked checkbox
         var ul = checkbox.parentElement.querySelector('.subfolder-contents');
@@ -672,7 +681,7 @@
     // -------------------- end of multiple downloads logic --------------------------
 
 
-    // Function to toggle folder contents visibility
+    // Function to toggle folder contents visibility (click a folder icon)
     function toggleFolderContents(icon) {
         // Find the subfolder contents list associated with the clicked folder icon
         var ul = icon.parentElement.querySelector('.subfolder-contents');
