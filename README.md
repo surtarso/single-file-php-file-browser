@@ -24,6 +24,7 @@ The project offers the following functionalities:
 - Allows users to navigate through the directory structure.
 - Differentiates between files and folders.
 - Excludes specific file extensions, such as PHP and SWP from the listing.
+- Download single or multiple files at once.
 
 [Back to top](#table-of-contents)
 
@@ -181,7 +182,7 @@ listDirectory($directory);
 Here are some planned enhancements for the Single File PHP File Browser:
 
 - **Mouse-over File Preview:** Implement mouse-over file preview to display a small preview when hovering over file links.
-- **Bulk Downloads:** Add the ability to select and download multiple files at once. [In progress]
+- ~~**Bulk Downloads:** Add the ability to select and download multiple files at once.~~ [Done]
 - **Pagination:** Implement pagination for directories with a large number of files and folders.
 - **Lazy Loading:** Improve performance by implementing lazy loading for large directories.
 - **Refactor:** Rewrite code into a class based design.
