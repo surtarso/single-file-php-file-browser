@@ -49,7 +49,8 @@ To use the Single File PHP File Browser, follow these simple steps:
 
 The `index.php` file will automatically generate a directory listing for the specified folder, allowing you to view and access the contained files and folders via a user-friendly web interface.
 ### Uploads (Optional)
-To upload files, create a '.users' text file in the same directory as index.php. Each line in the file should contain a 'username:password' pair. This is enought to make the upload section of the page visible.
+To upload files, create a '.users' text file in the same directory as index.php. Each line in the file should contain a 'username:password' pair. This is enought to make the upload section of the page visible and functional.
+
 However, **storing passwords in a plain text file is highly insecure** as it exposes them to potential breaches. For enhanced security, consider using a more robust password management system or encrypting the password file.
 
 **Recommended Security Measures:**
