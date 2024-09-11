@@ -61,7 +61,7 @@
         }
         .content {
             max-width: 800px;
-            margin: 20px auto;
+            margin: 5px auto;
             padding: 10px;
             background-color: #333;
             border-radius: 5px;
@@ -305,10 +305,67 @@
     </style>
 </head>
 <body>
+    <!-- --------------- top title header section --------------- -->
     <header>
         <!-- Dynamic header title with capitalized folder name or default title -->
         <h1>List of <?php echo isset($headerTitle) && !empty($headerTitle) ? $headerTitle : $defaultTitle; ?></h1>
     </header>
+
+    <!-- -------------------  upload section --------------------- -->
+    <?php
+        // file that stores username and passwords
+        $usersFile = './.users';
+        // allowed extensions to be uploaded by the user
+        $allowedTypes = array('jpg', 'jpeg', 'png', 'gif');
+
+        // Check if the .users file exists
+        if (file_exists($usersFile)) {
+            // The file exists, so show the upload form section
+            echo '<div class="content" style="display: flex; flex-direction: column; align-items: center; padding: 10px; margin-top: 5px;">';
+            echo '<form action="" method="POST" enctype="multipart/form-data" style="padding: 0px;">';
+            echo '<input type="text" name="username" placeholder="Username" style="margin: 0 4px;">';
+            echo '<input type="password" name="password" placeholder="Password">';
+            echo '<input type="file" name="files[]" multiple style="padding: 0 4px; width: 68px;">';
+            echo '<button type="submit">Upload</button> </form> </div>';
+        }
+    
+        // Server upload logic
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // Read users from the file
+            $users = file_get_contents($usersFile);
+            $usersArray = explode("\n", $users);
+
+            // Check if the user exists
+            $userExists = false;
+            foreach ($usersArray as $user) {
+                $userParts = explode(':', $user);
+                if ($userParts[0] === $_POST['username'] && $userParts[1] === $_POST['password']) {
+                    $userExists = true;
+                    break;
+                }
+            }
+
+            if ($userExists) { // Authenticated, proceed with upload
+                foreach ($_FILES['files']['tmp_name'] as $key => $tmpName) {
+                    $fileName = $_FILES['files']['name'][$key];
+                    $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+                    // Error check (bad user/pass or not allowed extension)
+                    if (in_array($fileExtension, $allowedTypes)) {
+                        move_uploaded_file($tmpName, $fileName);
+                        echo '<div style="display: flex; justify-content: center; margin: 3px; height: 25px;"><p style="color: green; padding: 2px; margin: 0;">File ' . $fileName . ' uploaded successfully.</p></div>';
+                    } else {
+                        echo '<div style="display: flex; justify-content: center; margin: 3px; height: 25px;"><p style="color: red; padding: 2px; margin: 0;">Invalid file type: ' . $fileName . '</p></div>';
+                    }
+                }
+            } else {
+                // display success message
+                echo '<div style="display: flex; justify-content: center; margin: 3px; height: 25px;"><p style="color: red; padding: 2px; margin: 0;">Invalid username or password.</p></div>';
+            }
+        }
+    ?>
+
+    <!-- files and folders view (main content part) -->
     <div class="content">
         <!-- ---------------- multiple downloads control buttons -------------- -->
         <header style="margin-left: 20px; padding-bottom: 0;">
@@ -322,10 +379,11 @@
                     <label for="toggleAllCheckboxes">All</label>
                 </div>
                 <!-- 'Download Selected' button -->
-                <button id="downloadSelected" style="display: none; margin-left: auto; margin-right: 12px;">Download Selected</button>
+                <button id="downloadSelected" style="display: none; margin-left: auto; margin-right: 15px;">Download Selected</button>
             </div>
         </header>
-        <!-- ------------------------------------------------------------------ -->
+
+        <!-- -------------------  main content section --------------------- -->        
         <ul>
             <?php
             // Define custom error messages
@@ -335,6 +393,8 @@
                 'file_not_found' => 'The requested file does not exist.',
                 'file_permission_denied' => 'Permission denied. You do not have access to this file.',
             ];
+
+            // Main function to list files and folders
             function listDirectory($directory) {
                 global $errorMessages;
                 try{
@@ -566,7 +626,7 @@
     </footer>
 </body>
 <script>
-    // -------------------  multiple downloads logic ------------------------
+    // ----------------------  general constants ---------------------------
     const downloadSelectedButton = document.getElementById('downloadSelected');
     const toggleCheckboxesInput = document.getElementById('toggleCheckboxes');
     const selectAllCheckboxInput = document.getElementById('selectAllCheckbox');
@@ -574,7 +634,9 @@
     const currentURL = window.location.href;
     const cleanURL = currentURL.slice(0, -1); // removes the final / from the URL
     // console.log(cleanURL);  // https://www.mydomain.com 
-    
+ 
+    // -------------------  multiple downloads logic ------------------------
+    // Function to handle download execution
     function downloadNextFile() {
         if (downloadQueue.length > 0) {
             // console.log(downloadQueue);   // Array [ "/file1.MP4", "/file2.mp3" ]
@@ -591,7 +653,7 @@
         }
     }
 
-    // Download button clicked, send selected files to DownloadNextFile() above
+    // Download button clicked, handle selected files to DownloadNextFile() above
     downloadSelectedButton.addEventListener('click', () => {
         const selectedFiles = Array.from(document.querySelectorAll('li input[type="checkbox"]:checked'))
             .map(checkbox => checkbox.value);
