@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <?php
     // Extracts the name from the URL and capitalizes it for the page title and header.
     // If no folder is found, uses the default title set in $defaultTitle.
@@ -15,14 +16,8 @@
 
     // Capitalize the first letter of the last segment
     $headerTitle = ucfirst($lastSegment);
-
-    // Define a file to be used as hyperlink if found in other folders
-    // multiples copies of this file can be copied to child folders or
-    // you can use any file you want, like index.html for a webpage.
-    $hyperlinkFile = 'index.php';
 ?>
 
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -32,37 +27,39 @@
     <!-- Dynamic page title with capitalized folder name -->
     <title><?php echo isset($headerTitle) && !empty($headerTitle) ? $headerTitle : $defaultTitle; ?></title>
     <style>
-        body {
+        html, body {
             font-family: Arial, sans-serif;
             font-style: normal;
             margin: 0;
             padding: 0;
             background-color: #1a1b1a;
+            height: 100%;
         }
         header {
             background-color: #333;
-            color: #fff;
+            color: whitesmoke;
             text-align: center;
             padding: 20px 0;
         }
-	footer {
+	    footer {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
             text-align: center;
             background-color: #333;
-            color: #fff;
+            color: whitesmoke;
             padding: 0;
+            font-size: 10px;
         }
         h1 {
             margin: 0;
-            font-size: 36px;
+            font-size: 32px;
         }
         .content {
             max-width: 800px;
             margin: 20px auto;
-            padding: 20px;
+            padding: 10px;
             background-color: #333;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
@@ -310,12 +307,19 @@
         <h1>List of <?php echo isset($headerTitle) && !empty($headerTitle) ? $headerTitle : $defaultTitle; ?></h1>
     </header>
     <div class="content">
-        <!-- --------- placeholder for multiple downloads --------- -->
-        <!-- <header>
-            <button id="toggleCheckboxes">Toggle Checkboxes</button>
-            <button id="downloadSelected">Download Selected</button>
-        </header> -->
-        <!-- ------------------------------------------------------ -->
+        <!-- --------- multiple downloads buttons --------- -->
+        <header style="margin-left: 20px; padding-bottom: 0;">
+            <div style="display: flex; align-items: center;">
+                <input type="checkbox" id="toggleCheckboxes" style="margin-right: 12px;">
+                <label for="toggleCheckboxes">Select...</label>
+                <div id="selectAllCheckbox" style="display: none;">
+                    <input type="checkbox" id="toggleAllCheckboxes" style="margin-left: 12px;">
+                    <label for="toggleAllCheckboxes">All</label>
+                </div>
+                <button id="downloadSelected" style="display: none; margin-left: auto; margin-right: 12px;">Download Selected</button>
+            </div>
+        </header>
+        <!-- ----------------------------------------------- -->
         <ul>
             <?php
             // Define custom error messages
@@ -342,9 +346,11 @@
                     }
 
                     // Create an array to store the file extensions
+                    // Files this these extensions will not show up
                     $notAllowedExtensions = array('php', 'swp');
 
                     // Create a mapping of file extensions to CSS icons
+                    // This will map the file extensions found into fontawesome icons
                     $iconMapping = array(
                         // Documents
                         'pdf' => 'icon-pdf',     // PDF document
@@ -418,7 +424,7 @@
                     foreach ($files as $file) {
                         // Exclude dot files and index files
                         if ($file != '.' && $file != '..' && !in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), $notAllowedExtensions)) {
-                            # $directory is some kind of path that most-likly ends with a '/', so we need to remove it if it is there
+                            # $directory is some kind of path that most-likly ends with a '/', so we need to remove it if its there
                             # Now the path is normalized and we can add the file to it
                             if (substr($directory, -1) == '/') {
                                 $directory = substr($directory, 0, -1);
@@ -431,7 +437,7 @@
                             # So we need to get the current scripts location and then add the relative path to it ( removing the './' at the beginning )
                             
                             # $currentLocation = dirname($_SERVER['SCRIPT_NAME']);
-                            # $dlPath = $currentLocation . substr($relPath, 1); # remove the '.' at the beginning
+                            $dlPath = $currentLocation . substr($relPath, 1); # remove the '.' at the beginning
             
                             # debugging paths
                             # echo "file: " . $file . "<br>";
@@ -439,13 +445,18 @@
                             # echo "directory: " . $directory . "<br>";
                             # echo "dlPath: " . $dlPath . "<br>";
 
+                            // ----------------------- HANDLE FOLDERS 
                             if (is_dir($relPath)) {
                                 $itemCount = countItemsInDirectory($relPath); // Count the number of items (files and subfolders) in the current folder
-
+                                
                                 echo '<li style="color: orange;">';
-
-                                // only add hyperlink icon to folder names if the target folder contains an index.php file  
-                                if (file_exists($relPath . '/' . $hyperlinkFile)) {
+                                # ------------------  multiple downloads (folder checkboxes)  --------------------------
+                                echo '<input type="checkbox" name="files[]" value="folder" onclick="toggleFolderContentsCheckbox(this)" style="display: none; margin-right: 12px;">';
+                                # -----------------------------------------------------------------------------------------------
+                                // only add hyperlink icon to folder names if the target folder contains an index.php file
+                                // multiples copies of this file can be copied to child folders or
+                                // you can use any file you want, like index.html for a webpage.
+                                if (file_exists($relPath . '/index.php')) {
                                     echo '<i class="icon-folder-closed" onclick="toggleFolderContents(this)"></i> ' . $file . ' <a href="' . $relPath . '"> <i class="fas fa-xs fa-external-link-alt"></i> </a> <span class="file-size">' . $itemCount . ' item(s)</span>';
                                 } else {
                                     echo '<i class="icon-folder-closed" onclick="toggleFolderContents(this)"></i> ' . $file . ' <span class="file-size">' . $itemCount . ' item(s)</span>';
@@ -456,11 +467,13 @@
                                 echo '</ul>'; // Close the subfolder list
                                 echo '</li>';
                                 
+                            // ------------------------ HANDLE FILES
                             } else {
                                 $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
                                 $iconClass = isset($iconMapping[$extension]) ? $iconMapping[$extension] : 'icon-default'; // Default to 'icon-default' if no mapping found
                                 $filePath = $directory . '/' . $file;
                                 
+                                // Error checking
                                 if (!file_exists($filePath)) {
                                     throw new Exception($errorMessages['file_not_found']);
                                 }
@@ -478,11 +491,12 @@
                                     echo '<i class="' . $iconClass . '"></i>' . $file . ' <span class="file-size">' . $e->getMessage() . '</span>';
                                     echo '</li>';
                                 }
-
-                                # ------------------  Placeholder for multiple downloads (checkboxes)  --------------------------
-                                #echo '<input type="checkbox" name="files[]" value="' . $dlPath . '" style="display: none;">';
-                                # -----------------------------------------------------------------------------------------------
+                                
+                                // Print -files- to screen
                                 echo '<li style="border-bottom: 1px solid #1a1b1a;">';
+                                # ------------------  multiple downloads (file checkboxes)  --------------------------
+                                echo '<input type="checkbox" name="files[]" value="' . $dlPath . '" style="display: none; margin-right: 12px;">';
+                                # -----------------------------------------------------------------------------------------------
                                 echo '<i class="' . $iconClass . '" onclick="getFile(this)"></i><a href="' . $relPath . '" download>' . $file . '</a> <span class="file-size">' . $fileSize . '</span>';
                                 echo '</li>';
                                 
@@ -543,25 +557,120 @@
     </footer>
 </body>
 <script>
-    // ---------------  Placeholder for multiple downloads ------------------------
-    //const toggleCheckboxesButton = document.getElementById('toggleCheckboxes');
-    //const downloadSelectedButton = document.getElementById('downloadSelected');
+    // -------------------  multiple downloads logic ------------------------
+    const downloadSelectedButton = document.getElementById('downloadSelected');
+    const toggleCheckboxesInput = document.getElementById('toggleCheckboxes');
+    const selectAllCheckboxInput = document.getElementById('selectAllCheckbox');
+    const downloadQueue = [];
+    const currentURL = window.location.href;
+    const cleanURL = currentURL.slice(0, -1); // removes the final / from the URL
+    // console.log(cleanURL);  // https://www.mydomain.com 
+    
+    function downloadNextFile() {
+        if (downloadQueue.length > 0) {
+            // console.log(downloadQueue);   // Array [ "/file1.MP4", "/file2.mp3" ]
+            const filePath = downloadQueue.shift(); // here is the current file name 
 
-    // Toggle checkbox button
-    // toggleCheckboxesButton.addEventListener('click', () => {
-    //     const checkboxes = document.querySelectorAll('li input[type="checkbox"]');
-    //     checkboxes.forEach(checkbox => {
-    //         checkbox.style.display = checkbox.style.display === 'none' ? 'inline-block' : 'none';
-    //     });
-    // });
+            const link = document.createElement('a');
+            link.href = cleanURL + filePath; // URL of the file to download
+            link.download = filePath; // Filename for the downloaded file
 
-    // Download checked button
-    // downloadSelectedButton.addEventListener('click', () => {
-    //     const selectedFiles = Array.from(document.querySelectorAll('li input[type="checkbox"]:checked'))
-    //         .map(checkbox => checkbox.value);
-    //     // download logic here, using selectedFiles array
-    // });
-    // ------------------------------------------------------------------------------
+            console.log(`Downloading: ${link.href}`);
+            link.click();
+
+            downloadNextFile();
+        }
+    }
+
+    // Download button clicked, send selected files to DownloadNextFile() above
+    downloadSelectedButton.addEventListener('click', () => {
+        const selectedFiles = Array.from(document.querySelectorAll('li input[type="checkbox"]:checked'))
+            .map(checkbox => checkbox.value);
+        // console.log(selectedFiles); // Array [ "/file1.MP4", "/file2.mp3" ]
+
+        // if one of the values of selectedFiles == "folder"
+        // remove those values so we can continue with just files
+        if (selectedFiles.some(file => file.includes("folder"))){
+            // create a filtered list without the word "folder"
+            var filteredFiles = selectedFiles.filter(file => !file.includes("folder"));
+            console.log(filteredFiles);
+        } else {
+            // just rename the array so we can continue
+            var filteredFiles = selectedFiles;
+            console.log(filteredFiles);
+        }
+
+        if (filteredFiles.length > 0) {
+            downloadQueue.push(...filteredFiles);
+            downloadNextFile();   //  Comment this line to test without actually downloading stuff
+        } else {
+            alert('Please select at least one file.');
+        }
+    });
+
+    // Event listener for the toggle checkboxes input on files ("Select..." checkbox)
+    toggleCheckboxesInput.addEventListener('change', () => {
+        toggleButtonsVisibility();
+
+        // Clear all checked checkboxes before toggling visibility
+        const checkboxes = document.querySelectorAll('li input[type="checkbox"]');
+        checkboxes.forEach(checkbox => checkbox.checked = false);
+
+        // Toggle visibility of all checkboxes
+        checkboxes.forEach(checkbox => {
+            checkbox.style.display = checkbox.style.display === 'none' ? 'inline-block' : 'none';
+        });
+
+        // Update the "All" checkbox to unchecked (clear it)
+        toggleAllCheckboxes.checked = false;
+    });
+
+
+    // Event listener for the "Select All" checkbox (select all files)
+    document.getElementById('toggleAllCheckboxes').addEventListener('change', () => {
+        const checkboxes = document.querySelectorAll('li input[type="checkbox"]');
+        const isChecked = toggleAllCheckboxes.checked;
+
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = isChecked;
+        });
+     });
+
+    // Function to toggle visibility of the download button
+    function toggleButtonsVisibility() {
+        if (toggleCheckboxesInput.checked) {
+            downloadSelectedButton.style.display = 'block';
+            selectAllCheckboxInput.style.display = 'block';
+        } else {
+            downloadSelectedButton.style.display = 'none';
+            selectAllCheckboxInput.style.display = 'none';
+        }
+    }
+
+    // Function to toggle checkboxes on folder contents (on folder checkbox)
+    function toggleFolderContentsCheckbox(checkbox) {
+        // Find the subfolder contents list associated with the clicked checkbox
+        var ul = checkbox.parentElement.querySelector('.subfolder-contents');
+
+        // Get the current checked state of the folder checkbox
+        var isChecked = checkbox.checked;
+
+        // Set the checked state of all checkboxes within the folder
+        ul.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.checked = isChecked;
+        });
+
+        // Toggle the folder's icon class to indicate its checked state
+        if (isChecked) {
+            checkbox.classList.remove('icon-folder-closed');
+            checkbox.classList.add('icon-folder-open');
+        } else {
+            checkbox.classList.remove('icon-folder-open');
+            checkbox.classList.add('icon-folder-closed');
+        }
+    }
+    // -------------------- end of multiple downloads logic --------------------------
+
 
     // Function to toggle folder contents visibility
     function toggleFolderContents(icon) {
