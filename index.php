@@ -586,7 +586,8 @@
                             # So we need to get the current scripts location and then add the relative path to it ( removing the './' at the beginning )
                             
                             # $currentLocation = dirname($_SERVER['SCRIPT_NAME']);
-                            $dlPath = $currentLocation . substr($relPath, 1); # remove the '.' at the beginning
+                            # $dlPath = $currentLocation . substr($relPath, 1); # remove the '.' at the beginning
+                            $dlPath = substr($relPath, 1); # remove the '.' at the beginning
             
                             # debugging paths
                             # echo "file: " . $file . "<br>";
@@ -727,7 +728,7 @@
 
             const link = document.createElement('a');
             link.href = cleanURL + filePath; // URL of the file to download
-            link.download = filePath; // Filename for the downloaded file
+            link.download = filePath.slice(1); // Filename for the downloaded file
 
             console.log(`Downloading: ${link.href}`);
             link.click(); // execute the download
