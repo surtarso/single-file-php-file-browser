@@ -33,7 +33,7 @@ This project offers the following functionalities:
 <p align="center">
     <img src="screenshot.png" alt="Single File PHP File Browser Screenshot">
 </p>
-<p align="center">(*Folders with the external link icon will navigate to their own index.php file instace.)</p>
+<p align="center">(*Folders with the 'external link' icon will navigate to their own index.php file instance.)</p>
 
 [Back to top](#table-of-contents)
 
