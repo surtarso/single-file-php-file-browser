@@ -24,14 +24,16 @@ This project offers the following functionalities:
 - Allows users to navigate through the directory tree structure.
 - Download or Upload single or multiple files at once.
 - Excludes specific file extensions and hidden files from the listing.
+- Automatic link to other instances of this script.*
 
 [Back to top](#table-of-contents)
 
 ## Screenshot
 
 <p align="center">
-    <img src="screenshot.png" alt="Screenshot">
+    <img src="screenshot.png" alt="Single File PHP File Browser Screenshot">
 </p>
+<p align="center">(*Folders with the external link icon will navigate to their own index.php file instace.)</p>
 
 [Back to top](#table-of-contents)
 
