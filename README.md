@@ -189,6 +189,7 @@ Here are some planned enhancements for the Single File PHP File Browser:
 - ~~**Bulk Downloads:** Add the ability to select and download multiple files at once.~~ [Done]
 - ~~**Bulk Uploads:** Add the ability to select and upload multiple files at once.~~ [Done]
 - ~~**Password:** Secure uploads with user/password.~~ [Done]
+- **Security:** Use hash to save/retrieve passwords from .users file.
 - **Mouse-over File Preview:** Implement mouse-over file preview to display a small preview when hovering over file links.
 - **Pagination:** Implement pagination for directories with a large number of files and folders.
 - **Lazy Loading:** Improve performance by implementing lazy loading for large directories.
