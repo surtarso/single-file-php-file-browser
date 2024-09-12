@@ -92,12 +92,94 @@
             padding: 0 15px;
             color: whitesmoke;
         }
+        /* upload form container */
+        #uploadContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            margin-top: 5px;
+        }
+        /* username field */
+        input[type="text"] {
+            margin: 0 4px;
+        }
+        /* browse button */
+        input[type="file"] {
+            padding: 0 4px;
+            width: 68px;
+        }
+        /* upload related messages */
+        .uploadOkMessage {
+            display: flex;
+            justify-content: center;
+            margin: 3px;
+            height: 25px;
+        }
+        .uploadOkMessage p {
+            color: green;
+            padding: 2px;
+            margin: 0;
+        }
+        .uploadErrorMessage {
+            display: flex;
+            justify-content: center;
+            margin: 3px;
+            height: 25px;
+        }
+        .uploadErrorMessage p {
+            color: red;
+            padding: 2px;
+            margin: 0;
+        }
+        /* downloads related */
+        .content header {
+            margin-left: 20px;
+            padding-bottom: 0;
+        }
+        /* download selected button */
+        #downloadSelected {
+            display: none;  
+            margin-left: auto;
+            margin-right: 15px;
+        }
+        .content header div {
+            display: flex;
+            align-items: center;
+        }
+        #toggleCheckboxes {
+            margin-right: 12px;
+        }
+        #toggleAllCheckboxes {
+            margin-left: 12px;
+        }
+        #selectAllCheckbox {
+            display: none; /* start hidden */
+        }
+        /* color of folder names */
+        #ListDirText {
+            color: orange;
+        }
+        #folderCheckbox {
+            /* display: none; these need to be echoed at runtime */
+            margin-right: 12px;
+        }
+        .fileUnderline {
+            border-bottom: 1px solid #1a1b1a;
+        }
+        #fileCheckbox {
+            /* display: none; these need to be echoed at runtime */
+            margin-right: 12px;
+        }
+        .catchScanErrorMessage {
+            color: red;
+        }
         /* Common styles for all icons */
         i {
             font-family: "Font Awesome 6 Free";
             font-style: normal;
-            margin-right: 15px;
-            margin-left: 5px;
+            margin-right: 8px;
+            margin-left: 4px;
             cursor: pointer;
         }
         /* Default fallback icon style */
@@ -300,8 +382,8 @@
             content: "\f03d"; /* Image */
             color: #e74c3c; /* Red */
         }
-        
         /* Add more CSS rules for other file extensions and their colors here */
+
     </style>
 </head>
 <body>
@@ -321,11 +403,11 @@
         // Check if the .users file exists
         if (file_exists($usersFile)) {
             // The file exists, so show the upload form section
-            echo '<div class="content" style="display: flex; flex-direction: column; align-items: center; padding: 10px; margin-top: 5px;">';
-            echo '<form action="" method="POST" enctype="multipart/form-data" style="padding: 0px;">';
-            echo '<input type="text" name="username" placeholder="Username" style="margin: 0 4px;">';
+            echo '<div class="content" id="uploadContainer">';
+            echo '<form action="" method="POST" enctype="multipart/form-data">';
+            echo '<input type="text" name="username" placeholder="Username">';
             echo '<input type="password" name="password" placeholder="Password">';
-            echo '<input type="file" name="files[]" multiple style="padding: 0 4px; width: 68px;">';
+            echo '<input type="file" name="files[]" multiple>';
             echo '<button type="submit">Upload</button> </form> </div>';
         }
     
@@ -350,17 +432,19 @@
                     $fileName = $_FILES['files']['name'][$key];
                     $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
-                    // Error check (bad user/pass or not allowed extension)
+
                     if (in_array($fileExtension, $allowedTypes)) {
                         move_uploaded_file($tmpName, $fileName);
-                        echo '<div style="display: flex; justify-content: center; margin: 3px; height: 25px;"><p style="color: green; padding: 2px; margin: 0;">File ' . $fileName . ' uploaded successfully.</p></div>';
+                        // success message
+                        echo '<div class="uploadOkMessage"><p>File ' . $fileName . ' uploaded successfully.</p></div>';
                     } else {
-                        echo '<div style="display: flex; justify-content: center; margin: 3px; height: 25px;"><p style="color: red; padding: 2px; margin: 0;">Invalid file type: ' . $fileName . '</p></div>';
+                        // bad extension error
+                        echo '<div class="uploadErrorMessage"><p>Invalid file type: ' . $fileName . '</p></div>';
                     }
                 }
             } else {
-                // display success message
-                echo '<div style="display: flex; justify-content: center; margin: 3px; height: 25px;"><p style="color: red; padding: 2px; margin: 0;">Invalid username or password.</p></div>';
+                // Invalid username or password message
+                echo '<div class="uploadErrorMessage"><p>Invalid username or password.</p></div>';
             }
         }
     ?>
@@ -368,18 +452,18 @@
     <!-- files and folders view (main content part) -->
     <div class="content">
         <!-- ---------------- multiple downloads control buttons -------------- -->
-        <header style="margin-left: 20px; padding-bottom: 0;">
-            <div style="display: flex; align-items: center;">
+        <header>
+            <div>
                 <!-- 'Select...' checkbox button -->
-                <input type="checkbox" id="toggleCheckboxes" style="margin-right: 12px;">
+                <input type="checkbox" id="toggleCheckboxes">
                 <label for="toggleCheckboxes">Select...</label>
-                <div id="selectAllCheckbox" style="display: none;">
+                <div id="selectAllCheckbox">
                     <!-- 'All' checkbox button -->
-                    <input type="checkbox" id="toggleAllCheckboxes" style="margin-left: 12px;">
+                    <input type="checkbox" id="toggleAllCheckboxes">
                     <label for="toggleAllCheckboxes">All</label>
                 </div>
                 <!-- 'Download Selected' button -->
-                <button id="downloadSelected" style="display: none; margin-left: auto; margin-right: 15px;">Download Selected</button>
+                <button id="downloadSelected">Download Selected</button>
             </div>
         </header>
 
@@ -514,9 +598,9 @@
                             if (is_dir($relPath)) {
                                 $itemCount = countItemsInDirectory($relPath); // Count the number of items (files and subfolders) in the current folder
                                 
-                                echo '<li style="color: orange;">';
+                                echo '<li id="ListDirText">';
                                 # ------------------  multiple downloads (folder checkboxes)  --------------------------
-                                echo '<input type="checkbox" name="files[]" value="folder" onclick="toggleFolderContentsCheckbox(this)" style="display: none; margin-right: 12px;">';
+                                echo '<input type="checkbox" name="files[]" value="folder" onclick="toggleFolderContentsCheckbox(this)" style="display: none;" id="folderCheckbox">';
                                 # -----------------------------------------------------------------------------------------------
                                 // only add hyperlink icon to folder names if the target folder contains an index.php file
                                 // multiples copies of this file can be copied to child folders or
@@ -552,15 +636,15 @@
                                     }
                                 } catch (Exception $e) {
                                     /// Handle the filesize() error
-                                    echo '<li style="border-bottom: 1px solid #1a1b1a;">';
+                                    echo '<li class="fileUnderline">';
                                     echo '<i class="' . $iconClass . '"></i>' . $file . ' <span class="file-size">' . $e->getMessage() . '</span>';
                                     echo '</li>';
                                 }
                                 
                                 // Print -files- to screen
-                                echo '<li style="border-bottom: 1px solid #1a1b1a;">';
+                                echo '<li class="fileUnderline">';
                                 # ------------------  multiple downloads (file checkboxes)  --------------------------
-                                echo '<input type="checkbox" name="files[]" value="' . $dlPath . '" style="display: none; margin-right: 12px;">';
+                                echo '<input id="fileCheckbox" type="checkbox" name="files[]" value="' . $dlPath . '" style="display: none;">';
                                 # ---------------------  files: icons, names and sizes  ------------------------------
                                 echo '<i class="' . $iconClass . '" onclick="getFile(this)"></i><a href="' . $relPath . '" download>' . $file . '</a> <span class="file-size">' . $fileSize . '</span>';
                                 echo '</li>';
@@ -573,9 +657,8 @@
 
                 } catch (Exception $e) {
                     // Handle the scandir() error
-                    echo '<p style="color: red;">' . $e->getMessage() . '</p>';
+                    echo '<p class="catchScanErrorMessage">' . $e->getMessage() . '</p>';
                 }
-
             }
                 
             // Folder content count
@@ -635,7 +718,7 @@
     const cleanURL = currentURL.slice(0, -1); // removes the final / from the URL
     // console.log(cleanURL);  // https://www.mydomain.com 
  
-    // -------------------  multiple downloads logic ------------------------
+    // --------------------- downloads logic -------------------------
     // Function to handle download execution
     function downloadNextFile() {
         if (downloadQueue.length > 0) {
@@ -647,31 +730,34 @@
             link.download = filePath; // Filename for the downloaded file
 
             console.log(`Downloading: ${link.href}`);
-            link.click();
+            link.click(); // execute the download
 
+            // keep calling this function until the queue is finished
             downloadNextFile();
         }
     }
 
     // Download button clicked, handle selected files to DownloadNextFile() above
     downloadSelectedButton.addEventListener('click', () => {
+        // create an array with all checked checkboxes filenames
         const selectedFiles = Array.from(document.querySelectorAll('li input[type="checkbox"]:checked'))
             .map(checkbox => checkbox.value);
         // console.log(selectedFiles); // Array [ "/file1.MP4", "/file2.mp3" ]
 
-        // if one of the values of selectedFiles == "folder"
-        // remove those values so we can continue with just real files
+        // if a folder is selected, one or more values of selectedFiles == "folder".
+        // we need to remove those values so we can continue with only real files.
         if (selectedFiles.some(file => file.includes("folder"))){
-            // create a filtered list without the word "folder"
+            // so we create a filtered list without the value "folder"
             var filteredFiles = selectedFiles.filter(file => !file.includes("folder"));
             console.log(filteredFiles);
         } else {
-            // just rename the array so we can continue
+            // or just rename the array so we can continue
             var filteredFiles = selectedFiles;
             console.log(filteredFiles);
         }
 
         if (filteredFiles.length > 0) {
+            // if the list has items, we push them to the queue and call the download function
             downloadQueue.push(...filteredFiles);
             downloadNextFile();   //  Comment this line to test without actually downloading stuff
         } else {
@@ -679,9 +765,20 @@
         }
     });
 
-    // Event listener for the toggle checkboxes input on files ("Select..." checkbox)
+    // Function to download single files using the icon
+    function getFile(icon) {
+        const link = document.createElement('a');
+        link.href = icon.nextSibling.href;
+        link.setAttribute('download', '');
+        link.click();
+    }
+    // -------------------- end of downloads logic --------------------------
+
+
+    // -------------------- buttons and checkboxes --------------------------
+    // Event listener for the "Select..." checkbox (show all checkboxes)
     toggleCheckboxesInput.addEventListener('change', () => {
-        toggleButtonsVisibility();
+        toggleButtonsVisibility(); // toggle 'all' and 'download' buttons
 
         // Clear all checked checkboxes before toggling visibility
         const checkboxes = document.querySelectorAll('li input[type="checkbox"]');
@@ -696,8 +793,7 @@
         toggleAllCheckboxes.checked = false;
     });
 
-
-    // Event listener for the "All" checkbox (select all files)
+    // Event listener for the "All" checkbox (to select all files)
     document.getElementById('toggleAllCheckboxes').addEventListener('change', () => {
         const checkboxes = document.querySelectorAll('li input[type="checkbox"]');
         const isChecked = toggleAllCheckboxes.checked;
@@ -707,7 +803,7 @@
         });
      });
 
-    // Function to toggle visibility of the download button
+    // Function to toggle visibility of the 'download' and 'all' button
     function toggleButtonsVisibility() {
         if (toggleCheckboxesInput.checked) {
             downloadSelectedButton.style.display = 'block';
@@ -718,7 +814,7 @@
         }
     }
 
-    // Function to toggle checkboxes on folder contents (click a folder checkbox)
+    // Function to select all checkboxes on a single folder (click a folder checkbox)
     function toggleFolderContentsCheckbox(checkbox) {
         // Find the subfolder contents list associated with the clicked checkbox
         var ul = checkbox.parentElement.querySelector('.subfolder-contents');
@@ -740,8 +836,6 @@
             checkbox.classList.add('icon-folder-closed');
         }
     }
-    // -------------------- end of multiple downloads logic --------------------------
-
 
     // Function to toggle folder contents visibility (click a folder icon)
     function toggleFolderContents(icon) {
@@ -759,14 +853,6 @@
             icon.classList.remove('icon-folder-closed');
             icon.classList.add('icon-folder-open');
         }
-    }
-    
-    // Function to download files using the icon
-    function getFile(icon) {
-        const link = document.createElement('a');
-        link.href = icon.nextSibling.href;
-        link.setAttribute('download', '');
-        link.click();
     }
 </script>
 </html>
