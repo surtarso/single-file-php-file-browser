@@ -574,8 +574,8 @@
             checkbox.checked = isChecked;
         });
 
-        // expands folder on checkbox check
-        if (ul.style.display !== 'block') {
+        // expands folder on checkbox check if unchecked
+        if (ul.style.display !== 'block' && isChecked) {
             toggleFolderContents(ul.parentElement.querySelector('i'));
         }
     }
