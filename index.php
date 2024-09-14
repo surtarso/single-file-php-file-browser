@@ -47,17 +47,23 @@
         ul.subfolder-contents{display: none;}
         .file-size {float: right; padding: 0 20px; color: whitesmoke;}
         /* --------------- UPLOAD FORM CONTAINER --------------- */
-        #uploadContainer {display: flex; flex-direction: column; align-items: center; padding: 10px; margin-top: 5px;}
-        /* username field */
-        input[type="text"] {margin: 0 4px;}
+        #uploadContainer {display: flex; flex-direction: row-reverse; padding: 10px; margin-top: 5px;}
+        #uploadContainer form {margin-right: 20px;}
+        /* username and password fields */
+        input[type="text"] {border-radius: 5px; margin: 0 4px; width: 90px;}
+        input[type="password"] {border-radius: 5px; width: 90px;}
         /* browse button */
         input[type="file"] {cursor: pointer; padding: 0 4px; width: 68px;}
         /* upload button */
         button[type="submit"] {cursor: pointer;}
         /* upload related messages */
-        .uploadOkMessage, .uploadErrorMessage {display: flex; justify-content: center; margin: 3px; height: 25px;}
+        .uploadOkMessage, .uploadErrorMessage {display: flex; justify-content: left; margin: 2px 20px; height: 20px;}
         .uploadOkMessage p {color: green; padding: 2px; margin: 0;}
         .uploadErrorMessage p {color: red; padding: 2px; margin: 0;}
+        /* selected files list */
+        #selectedFilesContainer {display: none;}
+        #selectedFilesList {display: block; list-style: square; padding: 0;}
+        #selectedFilesList li {margin: 0px 40px; padding: 0 20px 2px 10px; color: whitesmoke;}
         /* --------------- DOWNLOAD RELATED STUFF --------------- */
         /* #downloadControls {margin-left: 20px; padding-bottom: 0;} */
         #downloadControls {display: flex; align-items: center; color: whitesmoke; min-height: 25px;}
@@ -121,9 +127,12 @@
             echo '<form action="" method="POST" enctype="multipart/form-data">';
             echo '<input type="text" name="username" placeholder="Username">';
             echo '<input type="password" name="password" placeholder="Password">';
-            echo '<input type="file" name="files[]" multiple>';
+            echo '<input type="file" name="files[]" multiple id="browseButton">';
             echo '<button type="submit">Upload</button> </form> </div>';
         }
+
+        // show list selected files for upload, if any
+        echo '<div class="content" id="selectedFilesContainer"><ul id="selectedFilesList"></ul></div>';
     
         // Server upload logic
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -141,11 +150,12 @@
                 }
             }
 
+            // upload messages container
+            echo '<div class="content">';
             if ($userExists) { // Authenticated, proceed with upload
                 foreach ($_FILES['files']['tmp_name'] as $key => $tmpName) {
                     $fileName = $_FILES['files']['name'][$key];
                     $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-
 
                     if (in_array($fileExtension, $allowedTypes)) {
                         move_uploaded_file($tmpName, $fileName);
@@ -160,12 +170,11 @@
                 // Invalid username or password message
                 echo '<div class="uploadErrorMessage"><p>Invalid username or password.</p></div>';
             }
+            echo '</div>';
         }
     ?>
 
-    <!------------------------------- FILES AND FOLDERS VIEW (main content part) ---------------------->
-    
-    <!-- ---------------- multiple downloads control buttons -------------- -->
+    <!----------------------------------- MULTIPLE DOWNLOADS SECTION (buttons)  ----------------------->
     <div class="content" id="downloadControls">
         <!-- 'Select...' checkbox button -->
         <input type="checkbox" id="toggleCheckboxes">
@@ -179,8 +188,8 @@
         <button id="downloadSelected">Download Selected</button>
     </div>
 
-    <div class="content">
-        <!-- -------------------  main content section --------------------- -->        
+    <!------------------------------- FILES AND FOLDERS VIEW (main content part) ---------------------->
+    <div class="content">       
         <ul>
             <?php
             // Define custom error messages
@@ -207,11 +216,11 @@
                         throw new Exception($errorMessages['directory_permission_denied']);
                     }
 
-                    // Create an array to store the file extensions
-                    // Files with these extensions will not show up
+                    // Array to store unwanted file extensions
+                    // These extensions will not show up in list
                     $notAllowedExtensions = array('php', 'swp');
 
-                    // Create a mapping of file extensions to CSS icons
+                    // Array mapping of file extensions to CSS classes
                     // This will map the file extensions found into fontawesome icons
                     $iconMapping = array(
                         // Documents
@@ -246,26 +255,32 @@
                         'css' => 'fa-file-code',    // CSS stylesheet
                         'jsx' => 'fa-file-code',    // JSX (React) code
                         'html' => 'fa-file-code',   // HTML markup
-                        // Media Files
+                        // Media Files - Video
                         'avi' => 'fa-file-video',   // AVI video
+                        'wmv' => 'fa-file-video',   // WMV video
+                        'mov' => 'fa-file-video',   // MOV video
+                        'mp4' => 'fa-file-video',   // MP4 video
+                        'flv' => 'fa-file-video',   // FLV video
+                        'webm' => 'fa-file-video',  // WebM video
+                        'mkv' => 'fa-file-video',   // MKV video
+                        'mxf' => 'fa-file-video',   // MXF video
+                        // Media Files - Audio
                         'mp3' => 'fa-file-audio',   // MP3 audio
+                        'ogg' => 'fa-file-audio',   // OGG audio
+                        'wav' => 'fa-file-audio',   // WAV audio
+                        'flac' => 'fa-file-audio',  // FLAC audio
+                        'aac' => 'fa-file-audio',   // AAC audio
+                        'wma' => 'fa-file-audio',   // WMA audio
+                        'm4a' => 'fa-file-audio',   // M4A audio
+                        'ape' => 'fa-file-audio',   // APE audio
+                        'aaf' => 'fa-file-audio',   // AAF audio
+                        // Media Files - Image
                         'jpg' => 'fa-file-image',   // JPEG image
                         'jpeg' => 'fa-file-image',  // JPEG image
                         'png' => 'fa-file-image',   // PNG image
                         'gif' => 'fa-file-image',   // GIF image
                         'bmp' => 'fa-file-image',   // BMP image
                         'svg' => 'fa-file-image',   // SVG image
-                        'wmv' => 'fa-file-video',   // WMV video
-                        'mov' => 'fa-file-video',   // MOV video
-                        'mp4' => 'fa-file-video',   // MP4 video
-                        'flv' => 'fa-file-video',   // FLV video
-                        'webm' => 'fa-file-video',  // WebM video
-                        'ogg' => 'fa-file-audio',   // OGG audio/video
-                        'wav' => 'fa-file-audio',   // WAV audio
-                        'flac' => 'fa-file-audio',  // FLAC audio
-                        'aac' => 'fa-file-audio',   // AAC audio
-                        'wma' => 'fa-file-audio',   // WMA audio
-                        'm4a' => 'fa-file-audio',   // M4A audio
                         'psd' => 'fa-file-image',   // Adobe Photoshop document
                         'ai' => 'fa-file-image',    // Adobe Illustrator document
                         'eps' => 'fa-file-image',   // EPS vector image
@@ -273,12 +288,8 @@
                         'raw' => 'fa-file-image',   // RAW image
                         'tiff' => 'fa-file-image',  // TIFF image
                         'webp' => 'fa-file-image',  // WebP image
-                        'mkv' => 'fa-file-video',   // MKV video
-                        'ape' => 'fa-file-audio',   // APE audio
-                        'aaf' => 'fa-file-audio',   // AAF audio
                         'kra' => 'fa-file-image',   // Krita document
-                        'mxf' => 'fa-file-video',   // MXF video
-                        // ebooks
+                        // eBooks
                         'mobi' => 'fa-book',        // MOBI document
                         'epub' => 'fa-book',        // EPUB document
                         // Add more mappings as needed
@@ -427,9 +438,10 @@
 </body>
 <script>
     // ------------------------  UI ELEMENTS POINTERS ---------------------------
-    const downloadSelectedButton = document.getElementById('downloadSelected');
-    const toggleCheckboxesInput = document.getElementById('toggleCheckboxes');
-    const selectAllCheckboxInput = document.getElementById('selectAllCheckbox'); 
+    const downloadSelectedButton = document.getElementById('downloadSelected');  // 'Download' button
+    const toggleCheckboxesInput = document.getElementById('toggleCheckboxes');   // 'Select...' checkbox
+    const selectAllCheckboxInput = document.getElementById('selectAllCheckbox'); // 'All' checkbox
+    const browseButton = document.getElementById('browseButton');                // 'Browse' button (upload)
  
     // ---------------------------- DOWNLOADS LOGIC ------------------------------
     const downloadQueue = [];
@@ -489,8 +501,26 @@
         link.setAttribute('download', '');
         link.click();
     }
-    // --------------------------- end of downloads logic ---------------------------------
 
+    // --------------------------- UPLOAD FILE LIST ---------------------------------
+    const selectedFilesContainer = document.getElementById('selectedFilesContainer');
+    const selectedFilesList = document.getElementById('selectedFilesList');
+
+    // list of files selected to upload with the browse button
+    browseButton.addEventListener('change', () => {
+        if (browseButton.files.length > 0) {
+            selectedFilesContainer.style.display = 'flex';
+            selectedFilesList.innerHTML = '';
+            for (let i = 0; i < browseButton.files.length; i++) {
+                const li = document.createElement('li');
+                li.textContent = browseButton.files[i].name;  
+
+                selectedFilesList.appendChild(li);
+            }
+        } else {
+            selectedFilesContainer.style.display = 'none';
+        }
+    });
 
     // --------------------------- BUTTONS and CHECKBOXES-----------------------------
     // Event listener for the "Select..." checkbox (show all existing checkboxes)
@@ -506,11 +536,11 @@
             checkbox.style.display = checkbox.style.display === 'none' ? 'inline-block' : 'none';
         });
 
-        // Update the "All" checkbox to unchecked (clear it)
+        // Update the "All" checkbox to unchecked (uncheck all checkboxes)
         toggleAllCheckboxes.checked = false;
     });
 
-    // Event listener for the "All" checkbox (to select all files)
+    // Event listener for the "All" checkbox (to select all files/check all checkboxes)
     document.getElementById('toggleAllCheckboxes').addEventListener('change', () => {
         const checkboxes = document.querySelectorAll('li input[type="checkbox"]');
         const isChecked = toggleAllCheckboxes.checked;
@@ -518,9 +548,9 @@
         checkboxes.forEach(checkbox => {
             checkbox.checked = isChecked;
         });
-     });
+    });
 
-    // Function to toggle visibility of the buttons 'download' and 'all'
+    // Function to toggle visibility of the buttons 'Download' and 'All'
     function toggleButtonsVisibility() {
         if (toggleCheckboxesInput.checked) {
             downloadSelectedButton.style.display = 'block';
@@ -544,13 +574,9 @@
             checkbox.checked = isChecked;
         });
 
-        // Toggle the folder's icon class to indicate its checked state
-        if (isChecked) {
-            checkbox.classList.remove('icon-folder-closed');
-            checkbox.classList.add('icon-folder-open');
-        } else {
-            checkbox.classList.remove('icon-folder-open');
-            checkbox.classList.add('icon-folder-closed');
+        // expands folder on checkbox check
+        if (ul.style.display !== 'block') {
+            toggleFolderContents(ul.parentElement.querySelector('i'));
         }
     }
 
