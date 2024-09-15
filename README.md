@@ -30,14 +30,9 @@ This project offers the following functionalities:
 
 ## Screenshot
 
-<p align="center">
-    <img src="ss.jpeg" alt="Single File PHP File Browser Screenshot">
-</p>
 <table>
   <tr>
-    <td><img src="ss1.png" alt="Normal view"></td>
     <td><img src="ss2.png" alt="Selection view"></td>
-    <td><img src="ss3.png" alt="Upload enabled view"></td>
     <td><img src="ss4.png" alt="Upload status view"></td>
   </tr>
 </table>
