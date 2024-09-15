@@ -50,17 +50,32 @@ To use the Single File PHP File Browser, follow these simple steps:
 3. Access the folder using a web browser. You can do this by entering the folder's URL in your web browser's address bar. For example, if you placed `index.php` in a folder called "stuff" on your web server, you would access it like this: `http://yourdomain.com/stuff/`.
 
 The `index.php` file will automatically generate a directory listing for the specified folder, allowing you to view and access the contained files and folders via a user-friendly web interface.
-### Uploads (Optional)
-To upload files, create a '.users' text file in the same directory as index.php. Each line in the file should contain a 'username:password' pair. This is enought to make the upload section of the page visible and functional.
+## Uploads (Optional)
 
-However, **storing passwords in a plain text file is highly insecure** as it exposes them to potential breaches. For enhanced security, consider using a more robust password management system or encrypting the password file.
+The upload functionality requires you to add users to the system, but it's entirely optional. Here's how to set it up:
 
-**Recommended Security Measures:**
+**Enabling Uploads**
 
-- Hashing: Store passwords as hashed values using a strong cryptographic algorithm to make them irreversible.
-- Salting: Add a random salt to each hashed password to make it more difficult to crack.
-- Password Encryption: Encrypt the entire password file using a strong encryption algorithm.
-- Password Management Systems: Use dedicated password managers to securely store and manage user credentials.
+1. **Create Users:** The provided script `create-user` will generate a file named `.users` that **must be in the same directory as `index.php` for the upload section to show up.** The `.users` file stores user credentials securely.
+
+   ```bash
+   $ create-user your_username your_password
+   ```
+
+   This command creates the `.users` file with your credentials, enabling uploads. You can repeat this command to add more users.
+
+2. **Delete Users:** To delete an existing user, run the `create-user` script with the `--delete` flag after the username:
+
+   ```bash
+   $ create-user your_username --delete
+   ```
+
+   This will remove the user's credentials from the `.users` file. When the last user is deleted, the `.users` file will be automatically removed, and **the upload section will be hidden.**
+
+**Security Considerations**
+
+- For basic protection, rename the `create-user` script to `.create-user` so it's hidden on the file list (**note: this doesn't hide it completely**). It's better to move it to a location outside the web-accessible directory.
+
 
 [Back to top](#table-of-contents)
 
@@ -189,7 +204,7 @@ Here are some planned enhancements for the Single File PHP File Browser:
 - ~~**Bulk Downloads:** Add the ability to select and download multiple files at once.~~ [Done]
 - ~~**Bulk Uploads:** Add the ability to select and upload multiple files at once.~~ [Done]
 - ~~**Password:** Secure uploads with user/password.~~ [Done]
-- **Security:** Use hash to save/retrieve passwords from .users file.
+- ~~**Security:** Use hash to save/retrieve passwords from .users file.~~ [Done]
 - **Mouse-over File Preview:** Implement mouse-over file preview to display a small preview when hovering over file links.
 - **Pagination:** Implement pagination for directories with a large number of files and folders.
 - **Lazy Loading:** Improve performance by implementing lazy loading for large directories.
