@@ -30,9 +30,16 @@ This project offers the following functionalities:
 
 ## Screenshot
 
-<p align="center">
-    <img src="screenshot.png" alt="Single File PHP File Browser Screenshot">
-</p>
+<table>
+  <tr>
+    <td><img src="ss1.png" alt="Normal view"></td>
+    <td><img src="ss2.png" alt="Selection view"></td>
+  </tr>
+  <tr>
+    <td><img src="ss3.png" alt="Upload enabled view"></td>
+    <td><img src="ss4.png" alt="Upload status view"></td>
+  </tr>
+</table>
 <p align="center">(*Folders with the 'external link' icon will navigate to their own index.php file instance.)</p>
 
 [Back to top](#table-of-contents)
@@ -205,6 +212,7 @@ Here are some planned enhancements for the Single File PHP File Browser:
 - ~~**Bulk Uploads:** Add the ability to select and upload multiple files at once.~~ [Done]
 - ~~**Password:** Secure uploads with user/password.~~ [Done]
 - ~~**Security:** Use hash to save/retrieve passwords from .users file.~~ [Done]
+- **Upload Progress:** Display upload progress for user feedback.
 - **Mouse-over File Preview:** Implement mouse-over file preview to display a small preview when hovering over file links.
 - **Pagination:** Implement pagination for directories with a large number of files and folders.
 - **Lazy Loading:** Improve performance by implementing lazy loading for large directories.
