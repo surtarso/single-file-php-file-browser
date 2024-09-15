@@ -30,16 +30,9 @@ This project offers the following functionalities:
 
 ## Screenshot
 
-<table>
-  <tr>
-    <td><img src="ss1.png" alt="Normal view"></td>
-    <td><img src="ss2.png" alt="Selection view"></td>
-  </tr>
-  <tr>
-    <td><img src="ss3.png" alt="Upload enabled view"></td>
-    <td><img src="ss4.png" alt="Upload status view"></td>
-  </tr>
-</table>
+<p align="center">
+    <img src="screenshot.png" alt="Single File PHP File Browser Screenshot">
+</p>
 <p align="center">(*Folders with the 'external link' icon will navigate to their own index.php file instance.)</p>
 
 [Back to top](#table-of-contents)
@@ -48,7 +41,7 @@ This project offers the following functionalities:
 
 To use the Single File PHP File Browser, follow these simple steps:
 
-0. Make sure you have PHP enabled on your webserver.
+**Make sure you have PHP enabled on your webserver.**
 
 1. Download the `index.php` file from this project.
 
