@@ -1,24 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<?php
-    // Extracts the name from the URL and capitalizes it for the page title and header.
-    // If no folder is found, uses the default title set in '$defaultTitle'.
-    // ex.: mydomain.com/myfolder will use captalized Myfolder.
-    // ex.: mydomain.com/ will use the default title set below.
-
+<!-- ----------------- GLOBAL VARIABLES ------------------- -->
+<?php 
     // Define a default title if there is none from URL
     $defaultTitle = "Stuff";  // "My default title"
 
-    // Get the current URL
-    $currentUrl = $_SERVER['REQUEST_URI'];
+    // allowed extensions to be uploaded by users
+    $allowedTypes = array('jpg', 'jpeg', 'png', 'gif');
 
-    // Split the URL by "/" and get the last segment
-    $urlSegments = explode('/', rtrim($currentUrl, '/'));
-    $lastSegment = end($urlSegments);
-
-    // Capitalize the first letter of the last segment
-    $headerTitle = ucfirst($lastSegment);
+    // file that stores username and passwords
+    $usersFile = './.users';
 ?>
 
 <head>
@@ -29,6 +21,23 @@
     <!-- placeholder tab icon (favicon) so its not empty -->
     <link rel="shortcut icon" type="image/x-icon" href="data:image/x-icon;base64,c2t1bGw">
     <!-- Dynamic page tab title with capitalized folder name or default title -->
+    <?php
+        # Extracts the folder name from the URL, capitalizes it, and uses it for the page title and header.
+        # If no folder is found, falls back to the default title set in '$defaultTitle'.
+        # Examples:
+        #   - mydomain.com/myfolder -> Title: Myfolder
+        #   - mydomain.com -> Title: $defaultTitle
+
+        // Get the current URL
+        $currentUrl = $_SERVER['REQUEST_URI'];
+
+        // Split the URL by "/" and get the last segment
+        $urlSegments = explode('/', rtrim($currentUrl, '/'));
+        $lastSegment = end($urlSegments);
+    
+        // Capitalize the first letter of the last segment
+        $headerTitle = ucfirst($lastSegment);
+    ?>
     <title><?php echo isset($headerTitle) && !empty($headerTitle) ? $headerTitle : $defaultTitle; ?></title>
     <style>
         html, body {font-family: Arial, sans-serif; font-style: normal; margin: 0; padding: 0; background-color: #1a1b1a; height: 100%;}
@@ -46,6 +55,7 @@
         /* Start folded (hidden) */
         ul.subfolder-contents{display: none;}
         .file-size {float: right; padding: 0 20px; color: whitesmoke;}
+        .catchScanErrorMessage {color: red;}
         /* --------------- UPLOAD FORM CONTAINER --------------- */
         #uploadContainer {display: flex; flex-direction: row-reverse; padding: 10px; margin-top: 5px;}
         #uploadContainer form {margin-right: 20px;}
@@ -74,12 +84,11 @@
         /* color of folder names */
         #folderNames {display: inline; color: orange;}
         /* this is the filename/folder row in main view */
-        .fileUnderline {border-bottom: 1px solid #1a1b1a;}
-        .fileUnderline a {margin-left: 4px;}
+        .filesRow {border-bottom: 1px solid #1a1b1a;}
+        .filesRow a {margin-left: 4px;}
         /* start checkboxes hidden */
         #selectAllCheckbox {display: none; cursor: pointer;}
         #folderCheckbox, #fileCheckbox {cursor: pointer; margin-right: 8px;/*display:none; is echoed at runtime */}
-        .catchScanErrorMessage {color: red;}
         /* -------------- COMMON STYLES FOR ALL ICONS --------------- */
         i {font-family: "Font Awesome 6 Free"; font-size: 18px; font-style: normal; margin-right: 8px; margin-left: 4px; cursor: pointer;}
         /* Default fallback style "file-alt" icon in Font Awesome*/
@@ -115,11 +124,6 @@
 
     <!-- ---------------------------------  UPLOAD SECTION ----------------------------------- -->
     <?php
-        // file that stores username and passwords
-        $usersFile = './.users';
-        // allowed extensions to be uploaded by the user
-        $allowedTypes = array('jpg', 'jpeg', 'png', 'gif');
-
         // Check if the .users file exists
         if (file_exists($usersFile)) {
             // The file exists, so show the upload form section
@@ -131,7 +135,7 @@
             echo '<button type="submit">Upload</button> </form> </div>';
         }
 
-        // show list selected files for upload, if any
+        // show list of selected files for upload, if any
         echo '<div class="content" id="selectedFilesContainer"><ul id="selectedFilesList"></ul></div>';
     
         // Server upload logic
@@ -144,9 +148,16 @@
             $userExists = false;
             foreach ($usersArray as $user) {
                 $userParts = explode(':', $user);
-                if ($userParts[0] === $_POST['username'] && $userParts[1] === $_POST['password']) {
-                    $userExists = true;
-                    break;
+
+                // passwords in hash
+                if ($userParts[0] === $_POST['username']) {
+                    $storedHash = $userParts[1];
+        
+                    // Verify the password using password_verify
+                    if (password_verify($_POST['password'], $storedHash)) {
+                        $userExists = true;
+                        break;
+                    }
                 }
             }
 
@@ -364,13 +375,13 @@
                                     }
                                 } catch (Exception $e) {
                                     /// Handle the filesize() error
-                                    echo '<li class="fileUnderline">';
+                                    echo '<li class="filesRow">';
                                     echo '<i class="' . $iconClass . '"></i>' . $file . ' <span class="file-size">' . $e->getMessage() . '</span>';
                                     echo '</li>';
                                 }
                                 
                                 // Print -files- to screen
-                                echo '<li class="fileUnderline">';
+                                echo '<li class="filesRow">';
                                 # ------------------  multiple downloads (file checkboxes)  --------------------------
                                 echo '<input id="fileCheckbox" type="checkbox" name="files[]" value="' . $dlPath . '" style="display: none;">';
                                 # ---------------------  files: icons, names and sizes  ------------------------------
@@ -441,7 +452,6 @@
     const downloadSelectedButton = document.getElementById('downloadSelected');  // 'Download' button
     const toggleCheckboxesInput = document.getElementById('toggleCheckboxes');   // 'Select...' checkbox
     const selectAllCheckboxInput = document.getElementById('selectAllCheckbox'); // 'All' checkbox
-    const browseButton = document.getElementById('browseButton');                // 'Browse' button (upload)
  
     // ---------------------------- DOWNLOADS LOGIC ------------------------------
     const downloadQueue = [];
@@ -505,22 +515,25 @@
     // --------------------------- UPLOAD FILE LIST ---------------------------------
     const selectedFilesContainer = document.getElementById('selectedFilesContainer');
     const selectedFilesList = document.getElementById('selectedFilesList');
+    const browseButton = document.getElementById('browseButton');  // 'Browse' button (upload)
 
     // list of files selected to upload with the browse button
-    browseButton.addEventListener('change', () => {
-        if (browseButton.files.length > 0) {
-            selectedFilesContainer.style.display = 'flex';
-            selectedFilesList.innerHTML = '';
-            for (let i = 0; i < browseButton.files.length; i++) {
-                const li = document.createElement('li');
-                li.textContent = browseButton.files[i].name;  
+    if (browseButton) {
+        browseButton.addEventListener('change', () => {
+            if (browseButton.files.length > 0) {
+                selectedFilesContainer.style.display = 'flex';
+                selectedFilesList.innerHTML = '';
+                for (let i = 0; i < browseButton.files.length; i++) {
+                    const li = document.createElement('li');
+                    li.textContent = browseButton.files[i].name;  
 
-                selectedFilesList.appendChild(li);
+                    selectedFilesList.appendChild(li);
+                }
+            } else {
+                selectedFilesContainer.style.display = 'none';
             }
-        } else {
-            selectedFilesContainer.style.display = 'none';
-        }
-    });
+        });
+    }
 
     // --------------------------- BUTTONS and CHECKBOXES-----------------------------
     // Event listener for the "Select..." checkbox (show all existing checkboxes)
