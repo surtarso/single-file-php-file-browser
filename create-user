@@ -7,71 +7,102 @@ usersFile=".users"
 username="$1"
 password="$2"
 
-function check_user_exists() {
-    grep -q "^$username:" $usersFile
-}
-
-function delete_empty_file() {
-
-    if [[ ! -f "$usersFile" ]]; then
-        echo "File '$usersFile' not found."
-        return 1
-    fi
-
-    while IFS= read -r line; do
-        if [[ -n "$line" ]]; then
-            return 0  # Non-empty line found
-        fi
-    done < "$usersFile"
-
-    # If the loop completes without returning, the file is empty
-    rm -f "$usersFile" "$usersFile.tmp" 2> /dev/null
-    echo "'$username' was the last credential"
-    echo "Uploads are now disabled."
-}
+# Regular expressions for validation
+username_regex="^[a-zA-Z0-9_]{4,20}$"
+password_regex="^[a-zA-Z0-9_]{8,20}$"
 
 # Check for required arguments
-if [ $# -ne 2 ]; then
-
+if [[ $# -ne 2 ]]; then
     echo -e "Single File PHP File Browser"
     echo -e "User management usage:"
     echo -e "Add user: $0 username password"
     echo -e "Del user: $0 username --delete"
     exit 1
+fi
 
-# Check if it's a deletion
-elif [ "$password" = "--delete" ]; then
-
-    if [ -f $usersFile ]; then
-        # Get username from arguments and remove from users file
-        grep -v "$username:" $usersFile > $usersFile.tmp && mv $usersFile.tmp $usersFile
-        echo -e "User '$username' deleted."
+# Function to validate username
+function validate_username() {
+    if [[ ! "$username" =~ $username_regex ]]; then
+        echo "Invalid username: Must be 4-20 characters long. Only numbers and letters."
+        return 1
     fi
+}
+
+# Function to validate password
+function validate_password() {
+    if [[ ! "$password" =~ $password_regex ]]; then
+        echo "$password"
+        echo "Invalid password: Must be 8-20 characters long. Only numbers and letters."
+        return 1
+    fi
+}
+
+# Function to check if user exists
+function check_user_exists() {
+    grep -q "^$username:" "$usersFile"
+}
+
+# Function to delete empty file
+function delete_empty_file() {
+    if [[ ! -f "$usersFile" ]]; then
+        echo -e "File '$usersFile' not found."
+        return 1
+    fi
+
+    while IFS= read -r line; do
+        if [[ -n "$line" ]]; then
+            return 0 # Non-empty line found
+        fi
+    done <"$usersFile"
+
+    # If the loop completes without returning, the file is empty
+    rm -f "$usersFile" "$usersFile.tmp" 2>/dev/null
+    echo -e "'$username' was the last user credential"
+    echo -e "Uploads are now disabled."
+}
+
+# --------------------------- DELETION -----------------------------
+# Check if it's a deletion
+if [[ "$password" = "--delete" ]]; then
+    if [[ -f "$usersFile" ]] && check_user_exists "$username"; then
+        # Get username from arguments and remove from users file
+        grep -v "^$username:" "$usersFile" >"$usersFile".tmp && mv "$usersFile".tmp "$usersFile"
+        echo -e "User '$username' deleted."
+    else
+        echo "user '$username' doesn't exit."
+        exit 1
+    fi
+
     delete_empty_file
     exit 0
+fi
+
+# -------------------------- CREATION ------------------------------
+# Check if the user/pass are valid
+if ! validate_username "$username" || ! validate_password "$password"; then
+    exit 1
+
+# Check if the user already exists
+elif [[ -f "$usersFile" ]] && check_user_exists "$username"; then
+    echo -e "User '$username' already exists."
+    echo -e "If that's you, use: $0 $username --delete and try again."
+    exit 1
 
 # Proceed to user creation
 else
+    # If there's no users file up to this point, it will be created now.
+    if [[ ! -f "$usersFile" ]]; then echo -e "Uploads are now enabled."; fi
 
-    # Check if the user already exists
-    if [ -f $usersFile ] && check_user_exists "$username"; then
-        echo "User '$username' already exists."
-        echo -e "If that's you, use: $0 $username --delete and try again."
-        exit 1
+    # Hash the password using PHP
+    hashedPassword=$(php -r "echo password_hash('$password', PASSWORD_DEFAULT);")
 
-    else
-
-        # Hash the password using PHP
-        hashedPassword=$(php -r "echo password_hash('$password', PASSWORD_DEFAULT);")
-        if [ ! -f $usersFile ]; then echo "Uploads are now enabled."; fi
-        # If credentials are on the very first line of the file,
-        # This script is unable to remove it later for some reason.
-        # So we echo an empty line to overcome this.
-        echo "" >> $usersFile 
-        # Append the user and hashed password to the users file
-        echo "$username:$hashedPassword" >> $usersFile
-        echo -e "User '$username' added."
-        exit 0
-
-    fi
+    # If credentials are on the very first line of the file,
+    # This script is unable to remove it later for some reason.
+    # So we echo an empty line to overcome this.
+    echo "" >>"$usersFile"
+    
+    # Append the user and hashed password to the users file
+    echo "$username:$hashedPassword" >>"$usersFile"
+    echo -e "User '$username' added."
+    exit 0
 fi
