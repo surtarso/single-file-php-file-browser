@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# -- Single File PHP File Browser - User Management Script --
+# This script will create (or remove) a file to store credentials.
+# The upload section on index.php will only show up with this file.
+# It will create and delete users, and it will hash passwords.
+# Tarso Galvão - 19/09/2024 - Debian 12
+
 # Set file to store credentials
 # If changed here, it also needs to be changed in index.php
 # Global variable: $credentialsFile = './.users'; and vice-versa
@@ -31,14 +37,28 @@ function send_error() {
         file-write)
         echo -e "${RED}Error: Could not write to ${YELLOW}'$credentialsFile'${RED}. Check permissions.${NC}"
         ;;
-        delete-user)
-        echo -e "${RED}Error: Could not delete ${YELLOW}'$username'{RED}. Check file permissions.${NC}"
-        ;;
         file-delete)
         echo -e "${RED}Error: Could not remove ${YELLOW}'$credentialsFile'${RED}. Check permissions.${NC}"
         ;;
+        user-status)
+        echo -e "${RED}Error: Could not check status of ${YELLOW}'$username'${RED}. Check file permissions.${NC}"
+        ;;
+        delete-user)
+        echo -e "${RED}Error: Could not delete ${YELLOW}'$username'${RED}. Check file permissions.${NC}"
+        ;;
         no-user)
         echo -e "${RED}Error: User ${YELLOW}'$username'${RED} doesn't exit.${NC}"
+        ;;
+        user-exists)
+        echo -e "${RED}Error: User ${YELLOW}'$username'${RED} already exists.${NC}"
+        ;;
+        validation)
+        echo -e "${RED}Error: Invalid credentials! Please use only numbers and letters."
+        echo -e "Username: Must be 4-20 characters long."
+        echo -e "Password: Must be 8-20 characters long.${NC}"
+        ;;
+        hashing)
+        echo -e "${RED}Error: Could not hash the password. Do you have PHP installed?${NC}"
         ;;
         *)
         echo -e "${RED}Error: ${YELLOW}Unknown error${RED}.${NC}"
@@ -47,29 +67,26 @@ function send_error() {
     exit 1 
 }
 
-# Function to validate username
-function validate_username() {
+# Function to validade credentials
+function validate_credentials() {
     usernameRegex="^[a-zA-Z0-9_]{4,20}$"
-
-    if [[ ! "$username" =~ $usernameRegex ]]; then
-        echo -e "${RED}Invalid username: Must be 4-20 characters long. Only numbers and letters.${NC}"
-        return 1
-    fi
-}
-
-# Function to validate password
-function validate_password() {
     passwordRegex="^[a-zA-Z0-9_]{8,20}$"
-
-    if [[ ! "$password" =~ $passwordRegex ]]; then
-        echo -e "${RED}Invalid password: Must be 8-20 characters long. Only numbers and letters.${NC}"
+    
+    if [[ ! "$username" =~ $usernameRegex ]] ||
+        [[ ! "$password" =~ $passwordRegex ]]; then
         return 1
+    else
+        return 0
     fi
 }
 
 # Function to check if user exists
 function user_exists() {
-    grep -q "^$username:" "$credentialsFile"
+    if [[ -f "$credentialsFile" ]]; then
+        grep -q "^$username:" "$credentialsFile" || send_error user-status
+    else
+        return 1
+    fi
 }
 
 # Function to delete empty .users file
@@ -89,12 +106,12 @@ function delete_credentials_file() {
     # If the loop completes without returning, the file is empty, so delete it.
     rm -f "$credentialsFile" "$credentialsFile.tmp" 2>/dev/null || send_error file-delete
     echo -e "${YELLOW}'$username'${NC} was the last user credential."
-    echo -e "${RED}Uploads are now disabled.${NC}"
+    echo -e "${YELLOW}Uploads are now disabled.${NC}"
 }
 
 # Function to delete a user
 function delete_user() {
-    if [[ -f "$credentialsFile" ]] && user_exists; then
+    if user_exists; then
         # Get username from arguments and remove from users file
         grep -v "^$username:" "$credentialsFile" >"$credentialsFile".tmp &&
             mv "$credentialsFile".tmp "$credentialsFile" || send_error delete-user
@@ -118,7 +135,7 @@ function create_credentials_file () {
 # Function to create a user
 function create_user() {
     # Hash the password using PHP
-    hashedPassword=$(php -r "echo password_hash('$password', PASSWORD_DEFAULT);")
+    hashedPassword=$(php -r "echo password_hash('$password', PASSWORD_DEFAULT);") || send_error hashing
 
     # Append the user and hashed password to the users file
     echo "$username:$hashedPassword" >>"$credentialsFile" || send_error file-write
@@ -138,27 +155,23 @@ if [[ "$password" = "--delete" ]]; then
     delete_user
     # Delete credentials file if empty
     delete_credentials_file
-    # Exit gracefuly
     exit 0
 fi
 
 # CREATION --------------------------------------------------------
-# Check if the username given already exists
+# Check if given username already exists
 if user_exists; then
-    echo -e "${RED}Error: User ${YELLOW}'$username'${RED} already exists.${NC}"
-    # TODO: add rename logic maybe.
-    exit 1
+    send_error user-exists
 
 # Check if given username and password are valid using regex
-elif ! validate_username || ! validate_password; then
-    exit 1
+elif ! validate_credentials; then
+    send_error validation
 
 else
     # Create credentials file if none exists
     create_credentials_file
 
-    # Finally, create the user.
+    # Attempt to create the user
     create_user
+    exit 0
 fi
-
-exit 0
