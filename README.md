@@ -87,6 +87,7 @@ The upload functionality requires you to add users to the system, but it's entir
 - **PHP**: PHP is used to generate the directory listing and handle file system operations.
 - **HTML/CSS**: HTML and CSS are used for the presentation and styling of the directory listing.
 - **JavaScript:** to implement client-side features.
+- **Bash Script:** to provide user management.
 - **Font Awesome**: Font Awesome icons are used to enhance the visual representation of files and folders.
 
 [Back to top](#table-of-contents)
