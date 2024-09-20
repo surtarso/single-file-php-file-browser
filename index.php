@@ -6,11 +6,31 @@
     // Define a default title if there is none from URL
     $defaultTitle = "Stuff";  // "My default title"
 
-    // allowed extensions to be uploaded by users
-    $allowedTypes = array('jpg', 'jpeg', 'png', 'gif');
+    // These extensions will NOT show up in file listings
+    $notAllowedExtensions = array('php', 'swp');
 
-    // file that stores username and passwords
-    $usersFile = './.users';
+    // Allowed extensions to be uploaded by users
+    // -- Image types
+    // $allowedUploadTypes = array('jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'tiff');
+    // -- Video types
+    // $allowedUploadTypes = array('mp4', 'mov', 'avi', 'mkv', 'webm', 'flv', 'wmv');
+    // -- Audio types
+    // $allowedUploadTypes = array('mp3', 'wav', 'flac', 'ogg', 'aac', 'm4a');
+    // -- Document types
+    // $allowedUploadTypes = array('pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'rtf');
+    // -- Compressed types
+    $allowedUploadTypes = array('zip', 'rar', 'tar', 'gz', '7z');
+
+    // You can also combine some type arrays like this:
+    // $allowedUploadTypes = array_merge(
+    //     array('jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'tiff'),  // images
+    //     array('mp4', 'mov', 'avi', 'mkv', 'webm', 'flv', 'wmv')     // videos
+    // );
+
+    // File that stores users credentials
+    // If changed here, it also needs to be changed in 'create-user' script
+    // Global variable: $credentialsFile=".users" and vice-versa
+    $credentialsFile = './.users';
 ?>
 
 <head>
@@ -125,7 +145,7 @@
     <!-- ---------------------------------  UPLOAD SECTION ----------------------------------- -->
     <?php
         // Check if the .users file exists
-        if (file_exists($usersFile)) {
+        if (file_exists($credentialsFile)) {
             // The file exists, so show the upload form section
             echo '<div class="content" id="uploadContainer">';
             echo '<form action="" method="POST" enctype="multipart/form-data">';
@@ -141,7 +161,7 @@
         // Server upload logic
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Read users from the file
-            $users = file_get_contents($usersFile);
+            $users = file_get_contents($credentialsFile);
             $usersArray = explode("\n", $users);
 
             // Check if the user exists
@@ -168,7 +188,7 @@
                     $fileName = $_FILES['files']['name'][$key];
                     $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
-                    if (in_array($fileExtension, $allowedTypes)) {
+                    if (in_array($fileExtension, $allowedUploadTypes)) {
                         move_uploaded_file($tmpName, $fileName);
                         // success message
                         echo '<div class="uploadOkMessage"><p>File ' . $fileName . ' uploaded successfully.</p></div>';
@@ -227,9 +247,8 @@
                         throw new Exception($errorMessages['directory_permission_denied']);
                     }
 
-                    // Array to store unwanted file extensions
-                    // These extensions will not show up in list
-                    $notAllowedExtensions = array('php', 'swp');
+                    // Array of unwanted file extensions that will not show up in list
+                    global $notAllowedExtensions;
 
                     // Array mapping of file extensions to CSS classes
                     // This will map the file extensions found into fontawesome icons
