@@ -37,7 +37,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- fontawesome css link, update as you see fit -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- placeholder tab icon (favicon) so its not empty -->
     <link rel="shortcut icon" type="image/x-icon" href="data:image/x-icon;base64,c2t1bGw">
     <!-- Dynamic page tab title with capitalized folder name or default title -->
@@ -116,23 +118,26 @@
         /* Folder icon style */
         .icon-folder-open::before {content: "\f07c"; color: #428bca; cursor: pointer;}
         .icon-folder-closed::before {content: "\f07b"; color: #428bca; cursor: pointer;}
-        /* --------------- ICON COLORS -------------- */
-        .fa-file-pdf { color: #e74c3c; }
-        .fa-file-word { color: #3498db; }
-        .fa-file-lines { color: #2ecc71; }
-        .fa-file-code { color: #9b59b6; }
-        .fa-file-powerpoint { color: #e67e22; }
-        .fa-file-excel { color: #27ae60; }
-        .fa-file-csv { color: #f1c40f; }
-        .fa-file-alt { color: #95a5a6; }
-        .fa-file-zipper { color: #e67e22; }
-        .fa-file-archive { color: #e67e22; }
-        .fa-terminal { color: #34495e; }
-        .fa-file-exclamation { color: #e74c3c; }
-        .fa-file-video { color: #3498db; }
-        .fa-file-audio { color: #9b59b6; }
-        .fa-file-image { color: #2ecc71; }
-        .fa-book { color: #f39c12; }
+        /* ---------------------- ICON COLORS ----------------------- */
+        .fa-file-lines, .fa-file-image, .fa-android { color: #2ecc71; } /* Green */
+        .fa-file-pdf, .fa-windows, .fa-debian { color: #e74c3c; }      /* Red */
+        .fa-file-powerpoint, .fa-box-archive { color: #e67e22; }       /* Orange */
+        .fa-terminal, .fa-compass-drafting { color: #34495e; }         /* Dark Gray */
+        .fa-file-word, .fa-file-video { color: #3498db; }         /* Blue */
+        .fa-file-code, .fa-file-audio { color: #9b59b6; }         /* Purple */
+        .fa-compact-disc, .fa-book { color: #f39c12; }      /* Amber */
+        .fa-apple, .fa-linux { color: #000000; }            /* Black */
+        .fa-file-excel { color: #27ae60; }        /* Dark Green */
+        .fa-file-csv { color: #f1c40f; }          /* Yellow */
+        .fa-file-alt { color: #95a5a6; }          /* Light Gray */  
+        .fa-hdd { color: #2980b9; }               /* Dark Blue */
+        .fa-redhat { color: #c0392b; }            /* Dark Red */
+        .fa-box { color: #f0932b; }               /* Bright Orange */
+        .fa-file-zipper { color: #d35400; }       /* Dark Orange */
+        .fa-coffee { color: #6f4e37; }            /* Coffee Brown */
+        .fa-database { color: #16a085; }          /* Teal */
+        .fa-font { color: #e91e63; }              /* Pink */
+        .fa-cube { color: #1abc9c; }              /* Turquoise */
     </style>
 </head>
 <body>
@@ -254,75 +259,145 @@
                     // This will map the file extensions found into fontawesome icons
                     $iconMapping = array(
                         // Documents
-                        'pdf' => 'fa-file-pdf',     // PDF document
-                        'doc' => 'fa-file-word',    // Microsoft Word document
-                        'docx' => 'fa-file-word',   // Microsoft Word document
-                        'txt' => 'fa-file-lines',   // Text document
-                        'md' => 'fa-file-code',     // Markdown document
+                        'pdf' => 'fa-file-pdf',        // PDF document
+                        'doc' => 'fa-file-word',       // Microsoft Word document
+                        'docx' => 'fa-file-word',      // Microsoft Word document
+                        'txt' => 'fa-file-lines',      // Text document
+                        'md' => 'fa-solid fa-file-code',        // Markdown document
                         'ppt' => 'fa-file-powerpoint', // PowerPoint presentation
-                        'pptx' => 'fa-file-powerpoint', // PowerPoint presentation
-                        'xls' => 'fa-file-excel',   // Excel spreadsheet
-                        'xlsx' => 'fa-file-excel',  // Excel spreadsheet
-                        'csv' => 'fa-file-csv',     // CSV file
-                        'rtf' => 'fa-file-alt',     // Rich Text Format
+                        'pptx' => 'fa-file-powerpoint',// PowerPoint presentation
+                        'xls' => 'fa-file-excel',      // Excel spreadsheet
+                        'xlsx' => 'fa-file-excel',     // Excel spreadsheet
+                        'csv' => 'fa-file-csv',        // CSV file
+                        'rtf' => 'fa-file-alt',        // Rich Text Format
+                        'odt' => 'fa-file-word',       // OpenDocument Text
+                        'ods' => 'fa-file-excel',      // OpenDocument Spreadsheet
+                        'odp' => 'fa-file-powerpoint', // OpenDocument Presentation
+                        'pages' => 'fa-file-alt',      // Apple Pages document
+                        'numbers' => 'fa-file-excel',  // Apple Numbers spreadsheet
+                        'key' => 'fa-file-powerpoint', // Apple Keynote presentation
                         // Compressed Files
-                        'zip' => 'fa-file-zipper',  // ZIP archive
-                        'tar' => 'fa-file-archive', // TAR archive
-                        'gz' => 'fa-file-archive',  // GZ archive
-                        'rar' => 'fa-file-archive', // RAR archive
+                        'zip' => 'fa-file-zipper',     // ZIP archive
+                        'tar' => 'fa-solid fa-box-archive',    // TAR archive
+                        'gz' => 'fa-solid fa-box-archive',     // GZ archive
+                        'rar' => 'fa-solid fa-box-archive',    // RAR archive
+                        '7z' => 'fa-solid fa-box-archive',     // 7Z archive
+                        '7za' => 'fa-solid fa-box-archive',    // 7ZA archive
+                        'xz' => 'fa-solid fa-box-archive',     // XZ archive
+                        'bz2' => 'fa-solid fa-box-archive',    // BZ2 archive
+                        'lz' => 'fa-solid fa-box-archive',     // LZ archive
+                        'z' => 'fa-solid fa-box-archive',      // Z archive
+                        // Disk Images
+                        'iso' => 'fa-solid fa-compact-disc',    // ISO disk image
+                        'dmg' => 'fa-solid fa-compact-disc',    // Apple Disk Image
+                        'img' => 'fa-solid fa-compact-disc',    // Disk Image file
+                        'vmdk' => 'fa-hard-drive',     // Virtual Machine Disk
+                        'vdi' => 'fa-hard-drive',      // VirtualBox Disk Image
+                        'qcow2' => 'fa-hard-drive',    // QEMU Copy On Write image
                         // Executable/Scripts
-                        'sh' => 'fa-terminal',      // Shell script
-                        'bat' => 'fa-file-code',    // Batch script
-                        'exe' => 'fa-file-exclamation', // Executable file
-                        'ps1' => 'fa-file-code',    // PowerShell script
-                        'py' => 'fa-file-code',     // Python script
-                        'js' => 'fa-file-code',     // JavaScript code
-                        'php' => 'fa-file-code',    // PHP script
-                        'java' => 'fa-file-code',   // Java source code
-                        'cpp' => 'fa-file-code',    // C++ source code
-                        'rb' => 'fa-file-code',     // Ruby script
-                        'c' => 'fa-file-code',      // C source code
-                        'css' => 'fa-file-code',    // CSS stylesheet
-                        'jsx' => 'fa-file-code',    // JSX (React) code
-                        'html' => 'fa-file-code',   // HTML markup
+                        'sh' => 'fa-solid fa-terminal',         // Shell script
+                        'bat' => 'fa-solid fa-file-code',       // Batch script
+                        'exe' => 'fa-brands fa-windows',        // Executable file
+                        'ps1' => 'fa-solid fa-file-code',       // PowerShell script
+                        'py' => 'fa-solid fa-file-code',        // Python script
+                        'js' => 'fa-solid fa-file-code',        // JavaScript code
+                        'php' => 'fa-solid fa-file-code',       // PHP script
+                        'java' => 'fa-solid fa-file-code',      // Java source code
+                        'cpp' => 'fa-solid fa-file-code',       // C++ source code
+                        'rb' => 'fa-solid fa-file-code',        // Ruby script
+                        'c' => 'fa-solid fa-file-code',         // C source code
+                        'css' => 'fa-solid fa-file-code',       // CSS stylesheet
+                        'jsx' => 'fa-solid fa-file-code',       // JSX (React) code
+                        'html' => 'fa-solid fa-file-code',      // HTML markup
+                        'app' => 'fa-solid fa-file-code',       // macOS Application Bundle
+                        'jar' => 'fa-brands fa-java',           // Java Archive
+                        'pl' => 'fa-solid fa-file-code',        // Perl script
+                        'r' => 'fa-solid fa-file-code',         // R script
+                        'go' => 'fa-solid fa-file-code',        // Go source code
+                        'rs' => 'fa-solid fa-file-code',        // Rust source code
+                        'asm' => 'fa-solid fa-file-code',       // Assembly language source code
+                        // Linux Packages
+                        'deb' => 'fa-brands fa-debian',          // Debian package
+                        'rpm' => 'fa-brands fa-redhat',          // Red Hat package
+                        'pkg' => 'fa-solid fa-box',              // macOS Installer package
+                        'appimage' => 'fa-brands fa-linux',      // Linux AppImage
+                        'snap' => 'fa-brands fa-linux',          // Linux Snap package
+                        'flatpak' => 'fa-brands fa-linux',       // Linux Flatpak package
                         // Media Files - Video
-                        'avi' => 'fa-file-video',   // AVI video
-                        'wmv' => 'fa-file-video',   // WMV video
-                        'mov' => 'fa-file-video',   // MOV video
-                        'mp4' => 'fa-file-video',   // MP4 video
-                        'flv' => 'fa-file-video',   // FLV video
-                        'webm' => 'fa-file-video',  // WebM video
-                        'mkv' => 'fa-file-video',   // MKV video
-                        'mxf' => 'fa-file-video',   // MXF video
+                        'avi' => 'fa-file-video',      // AVI video
+                        'wmv' => 'fa-file-video',      // WMV video
+                        'mov' => 'fa-file-video',      // MOV video
+                        'mp4' => 'fa-file-video',      // MP4 video
+                        'flv' => 'fa-file-video',      // FLV video
+                        'webm' => 'fa-file-video',     // WebM video
+                        'mkv' => 'fa-file-video',      // MKV video
+                        'mxf' => 'fa-file-video',      // MXF video
                         // Media Files - Audio
-                        'mp3' => 'fa-file-audio',   // MP3 audio
-                        'ogg' => 'fa-file-audio',   // OGG audio
-                        'wav' => 'fa-file-audio',   // WAV audio
-                        'flac' => 'fa-file-audio',  // FLAC audio
-                        'aac' => 'fa-file-audio',   // AAC audio
-                        'wma' => 'fa-file-audio',   // WMA audio
-                        'm4a' => 'fa-file-audio',   // M4A audio
-                        'ape' => 'fa-file-audio',   // APE audio
-                        'aaf' => 'fa-file-audio',   // AAF audio
+                        'mp3' => 'fa-file-audio',      // MP3 audio
+                        'ogg' => 'fa-file-audio',      // OGG audio
+                        'wav' => 'fa-file-audio',      // WAV audio
+                        'flac' => 'fa-file-audio',     // FLAC audio
+                        'aac' => 'fa-file-audio',      // AAC audio
+                        'wma' => 'fa-file-audio',      // WMA audio
+                        'm4a' => 'fa-file-audio',      // M4A audio
+                        'ape' => 'fa-file-audio',      // APE audio
+                        'aaf' => 'fa-file-audio',      // AAF audio
                         // Media Files - Image
-                        'jpg' => 'fa-file-image',   // JPEG image
-                        'jpeg' => 'fa-file-image',  // JPEG image
-                        'png' => 'fa-file-image',   // PNG image
-                        'gif' => 'fa-file-image',   // GIF image
-                        'bmp' => 'fa-file-image',   // BMP image
-                        'svg' => 'fa-file-image',   // SVG image
-                        'psd' => 'fa-file-image',   // Adobe Photoshop document
-                        'ai' => 'fa-file-image',    // Adobe Illustrator document
-                        'eps' => 'fa-file-image',   // EPS vector image
-                        'indd' => 'fa-file-alt',    // Adobe InDesign document
-                        'raw' => 'fa-file-image',   // RAW image
-                        'tiff' => 'fa-file-image',  // TIFF image
-                        'webp' => 'fa-file-image',  // WebP image
-                        'kra' => 'fa-file-image',   // Krita document
+                        'jpg' => 'fa-file-image',      // JPEG image
+                        'jpeg' => 'fa-file-image',     // JPEG image
+                        'png' => 'fa-file-image',      // PNG image
+                        'gif' => 'fa-file-image',      // GIF image
+                        'bmp' => 'fa-file-image',      // BMP image
+                        'svg' => 'fa-file-image',      // SVG image
+                        'psd' => 'fa-file-image',      // Adobe Photoshop document
+                        'ai' => 'fa-file-image',       // Adobe Illustrator document
+                        'eps' => 'fa-file-image',      // EPS vector image
+                        'indd' => 'fa-file-alt',       // Adobe InDesign document
+                        'raw' => 'fa-file-image',      // RAW image
+                        'tiff' => 'fa-file-image',     // TIFF image
+                        'webp' => 'fa-file-image',     // WebP image
+                        'kra' => 'fa-file-image',      // Krita document
                         // eBooks
-                        'mobi' => 'fa-book',        // MOBI document
-                        'epub' => 'fa-book',        // EPUB document
-                        // Add more mappings as needed
+                        'mobi' => 'fa-solid fa-book',  // MOBI document
+                        'epub' => 'fa-solid fa-book',  // EPUB document
+                        // Database Files
+                        'sql' => 'fa-solid fa-database',        // SQL database
+                        'db' => 'fa-solid fa-database',         // Database file
+                        'dbf' => 'fa-solid fa-database',        // Database file (DBF format)
+                        'mdf' => 'fa-solid fa-database',        // SQL Server database file
+                        // Font Files
+                        'ttf' => 'fa-solid fa-font',            // TrueType Font
+                        'otf' => 'fa-solid fa-font',            // OpenType Font
+                        'woff' => 'fa-solid fa-font',           // Web Open Font Format
+                        'woff2' => 'fa-solid fa-font',          // Web Open Font Format 2
+                        // CAD Files
+                        'dwg' => 'fa-solid fa-compass-drafting',// AutoCAD Drawing
+                        'dxf' => 'fa-solid fa-compass-drafting',// AutoCAD Drawing Exchange Format
+                        'step' => 'fa-solid fa-cube',           // STEP 3D model file
+                        'stl' => 'fa-solid fa-cube',            // Stereolithography file
+                        'obj' => 'fa-solid fa-cube',            // Wavefront OBJ file
+                        // 3D Model Files
+                        'fbx' => 'fa-solid fa-cube',            // Autodesk FBX
+                        'glb' => 'fa-solid fa-cube',            // GLB 3D model
+                        'gltf' => 'fa-solid fa-cube',           // GLTF 3D model
+                        'blend' => 'fa-solid fa-cube',          // Blender project file
+                        // Code Files
+                        'csharp' => 'fa-solid fa-file-code',    // C# source code
+                        'cs' => 'fa-solid fa-file-code',        // C# source code
+                        'vb' => 'fa-solid fa-file-code',        // Visual Basic file
+                        'mat' => 'fa-solid fa-file-code',       // MATLAB file
+                        'scala' => 'fa-solid fa-file-code',     // Scala source code
+                        'hs' => 'fa-solid fa-file-code',        // Haskell source code
+                        'erl' => 'fa-solid fa-file-code',       // Erlang source code
+                        // Apple Extensions
+                        'ipa' => 'fa-brands fa-apple',           // iOS App Store Package
+                        'apk' => 'fa-brands fa-android',         // Android Package
+                        // Other Important Files
+                        'json' => 'fa-solid fa-file-code',      // JSON file
+                        'xml' => 'fa-solid fa-file-code',       // XML file
+                        'yaml' => 'fa-solid fa-file-code',      // YAML file
+                        'yml' => 'fa-solid fa-file-code',       // YAML file
+                        'log' => 'fa-file-lines',      // Log file
                     );                    
 
                     echo '<ul class="folder-contents">';

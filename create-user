@@ -5,6 +5,8 @@
 # The upload section on index.php will only show up with this file.
 # It will create and delete users, and it will hash passwords.
 # Tarso Galvão - 19/09/2024 - Debian 12
+# github.com/surtarso/single-file-php-file-browser
+
 
 # Set file to store credentials
 # If changed here, it also needs to be changed in index.php
@@ -23,9 +25,9 @@ NC='\033[0m' # No Color
 
 # ------------------------------- FUNCTIONS ----------------------------------
 # Function to display an error message and exit the script
-function send_error() { 
+function exit_with_error() { 
     case "$1" in
-        bad-args)
+        wrong-args)
         echo -e "${YELLOW}Single File PHP File Browser${NC}"
         echo -e "User management script usage:"
         echo -e "Add user: ${YELLOW}$0 ${GREEN}username password${NC}"
@@ -35,33 +37,35 @@ function send_error() {
         echo -e "${RED}Error: Could not create ${YELLOW}'$credentialsFile'${RED}. Check permissions.${NC}"
         ;;
         file-write)
-        echo -e "${RED}Error: Could not write to ${YELLOW}'$credentialsFile'${RED}. Check permissions.${NC}"
+        echo -e "${RED}Write Error: Could not write to ${YELLOW}'$credentialsFile'${RED}. Check permissions.${NC}"
         ;;
         file-delete)
         echo -e "${RED}Error: Could not remove ${YELLOW}'$credentialsFile'${RED}. Check permissions.${NC}"
         ;;
-        user-status)
-        echo -e "${RED}Error: Could not check status of ${YELLOW}'$username'${RED}. Check file permissions.${NC}"
+        file-read)
+        echo -e "${RED}Read Error: Could not scan for ${YELLOW}'$username'${RED}. Check file permissions.${NC}"
         ;;
         delete-user)
         echo -e "${RED}Error: Could not delete ${YELLOW}'$username'${RED}. Check file permissions.${NC}"
         ;;
-        no-user)
-        echo -e "${RED}Error: User ${YELLOW}'$username'${RED} doesn't exit.${NC}"
+        username-null)
+        echo -e "${RED}Error: Username ${YELLOW}'$username'${RED} doesn't exit.${NC}"
         ;;
-        user-exists)
-        echo -e "${RED}Error: User ${YELLOW}'$username'${RED} already exists.${NC}"
+        username-exists)
+        echo -e "${RED}Error: Username ${YELLOW}'$username'${RED} already exists.${NC}"
         ;;
-        validation)
+        validation-failed)
         echo -e "${RED}Error: Invalid credentials! Please use only numbers and letters."
         echo -e "Username: Must be 4-20 characters long."
         echo -e "Password: Must be 8-20 characters long.${NC}"
         ;;
-        hashing)
+        hashing-failed)
         echo -e "${RED}Error: Could not hash the password. Do you have PHP installed?${NC}"
         ;;
         *)
-        echo -e "${RED}Error: ${YELLOW}Unknown error${RED}.${NC}"
+        echo -e "${RED}Error: ${YELLOW}Uh oh... Unknown error${RED}.${NC}"
+        echo -e "Please create an issue on 'github.com/surtarso/single-file-php-file-browser'"
+        echo -e "and reproduce the steps taken for this message to show. Thanks! <3"
         ;;
     esac
     exit 1 
@@ -75,18 +79,18 @@ function validate_credentials() {
     if [[ ! "$username" =~ $usernameRegex ]] ||
         [[ ! "$password" =~ $passwordRegex ]]; then
         return 1
-    else
-        return 0
     fi
+
+    return 0
 }
 
 # Function to check if user exists
 function user_exists() {
-    if [[ -f "$credentialsFile" ]]; then
-        grep -q "^$username:" "$credentialsFile" || send_error user-status
-    else
+    if [[ ! -f "$credentialsFile" ]]; then
         return 1
     fi
+
+    grep -q "^$username:" "$credentialsFile" || exit_with_error file-read
 }
 
 # Function to delete empty .users file
@@ -104,48 +108,50 @@ function delete_credentials_file() {
     done <"$credentialsFile"
 
     # If the loop completes without returning, the file is empty, so delete it.
-    rm -f "$credentialsFile" "$credentialsFile.tmp" 2>/dev/null || send_error file-delete
+    rm -f "$credentialsFile" "$credentialsFile.tmp" 2>/dev/null || exit_with_error file-delete
     echo -e "${YELLOW}'$username'${NC} was the last user credential."
     echo -e "${YELLOW}Uploads are now disabled.${NC}"
 }
 
 # Function to delete a user
 function delete_user() {
-    if user_exists; then
-        # Get username from arguments and remove from users file
-        grep -v "^$username:" "$credentialsFile" >"$credentialsFile".tmp &&
-            mv "$credentialsFile".tmp "$credentialsFile" || send_error delete-user
-        echo -e "User ${YELLOW}'$username'${NC} deleted."
-    else
-        send_error no-user
+    if ! user_exists; then
+        exit_with_error username-null
     fi
+
+    # Get username from arguments and remove from users file
+    grep -v "^$username:" "$credentialsFile" >"$credentialsFile".tmp &&
+        mv "$credentialsFile".tmp "$credentialsFile" || exit_with_error delete-user
+    echo -e "User ${YELLOW}'$username'${NC} deleted."
 }
 
 # Function to create the file where credentials will be stored
 function create_credentials_file () {
-    if [[ ! -f "$credentialsFile" ]]; then 
-        # If credentials are on the very first line of the file,
-        # this script is unable to remove it later for some reason.
-        # So we echo an empty line to overcome this.
-        echo "" >>"$credentialsFile" || send_error file-create
-        echo -e "${GREEN}Uploads are now enabled.${NC}"
+    if [[ -f "$credentialsFile" ]]; then 
+        return 0
     fi
+
+    # If credentials are on the very first line of the file,
+    # this script is unable to remove it later for some reason.
+    # So we echo an empty line to overcome this.
+    echo "" >>"$credentialsFile" || exit_with_error file-create
+    echo -e "${GREEN}Uploads are now enabled.${NC}"
 }
 
 # Function to create a user
 function create_user() {
     # Hash the password using PHP
-    hashedPassword=$(php -r "echo password_hash('$password', PASSWORD_DEFAULT);") || send_error hashing
+    hashedPassword=$(php -r "echo password_hash('$password', PASSWORD_DEFAULT);") || exit_with_error hashing-failed
 
     # Append the user and hashed password to the users file
-    echo "$username:$hashedPassword" >>"$credentialsFile" || send_error file-write
+    echo "$username:$hashedPassword" >>"$credentialsFile" || exit_with_error file-write
     echo -e "User ${YELLOW}'$username'${NC} added."
 }
 
 # -------------------------- MAIN LOGIC ---------------------------
 # Check for required arguments
 if [[ $# -ne 2 ]]; then
-    send_error bad-args
+    exit_with_error wrong-args
 fi
 
 # DELETION --------------------------------------------------------
@@ -161,11 +167,11 @@ fi
 # CREATION --------------------------------------------------------
 # Check if given username already exists
 if user_exists; then
-    send_error user-exists
+    exit_with_error username-exists
 
 # Check if given username and password are valid using regex
 elif ! validate_credentials; then
-    send_error validation
+    exit_with_error validation-failed
 
 else
     # Create credentials file if none exists
