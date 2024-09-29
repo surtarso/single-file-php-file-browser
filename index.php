@@ -98,7 +98,7 @@
         #selectedFilesList li {margin: 0px 40px; padding: 0 20px 2px 10px; color: whitesmoke;}
         /* --------------- DOWNLOAD RELATED STUFF --------------- */
         /* #downloadControls {margin-left: 20px; padding-bottom: 0;} */
-        #downloadControls {display: flex; align-items: center; color: whitesmoke; min-height: 25px;}
+        #downloadControls {display: flex; align-items: center; color: whitesmoke; min-height: 25px; margin-top: 10px;}
         /* download selected button */
         #downloadSelected {cursor: pointer; display: none; margin-left: auto; margin-right: 20px;}
         #toggleCheckboxes {cursor: pointer; margin-left: 24px; margin-right: 7px;}
@@ -158,74 +158,74 @@
             echo '<input type="password" name="password" placeholder="Password">';
             echo '<input type="file" name="files[]" multiple id="browseButton">';
             echo '<button type="submit">Upload</button> </form> </div>';
-        }
-
-        // show list of selected files for upload, if any
-        echo '<div class="content" id="selectedFilesContainer"><ul id="selectedFilesList"></ul></div>';
-    
-        // Server upload logic
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Read users from the file
-            $users = file_get_contents($credentialsFile);
-            $usersArray = explode("\n", $users);
-
-            // Check if the user exists
-            $userExists = false;
-            foreach ($usersArray as $user) {
-                $userParts = explode(':', $user);
-
-                // passwords in hash
-                if ($userParts[0] === $_POST['username']) {
-                    $storedHash = $userParts[1];
         
-                    // Verify the password using password_verify
-                    if (password_verify($_POST['password'], $storedHash)) {
-                        $userExists = true;
-                        break;
+            // show list of selected files for upload, if any
+            echo '<div class="content" id="selectedFilesContainer"><ul id="selectedFilesList"></ul></div>';
+        
+            // Server upload logic
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                // Read users from the file
+                $users = file_get_contents($credentialsFile);
+                $usersArray = explode("\n", $users);
+
+                // Check if the user exists
+                $userExists = false;
+                foreach ($usersArray as $user) {
+                    $userParts = explode(':', $user);
+
+                    // passwords in hash
+                    if ($userParts[0] === $_POST['username']) {
+                        $storedHash = $userParts[1];
+            
+                        // Verify the password using password_verify
+                        if (password_verify($_POST['password'], $storedHash)) {
+                            $userExists = true;
+                            break;
+                        }
                     }
                 }
-            }
 
-            // upload messages container
-            echo '<div class="content">';
-            if ($userExists) { // Authenticated, proceed with upload
-                foreach ($_FILES['files']['tmp_name'] as $key => $tmpName) {
-                    $fileName = $_FILES['files']['name'][$key];
-                    $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+                // upload messages container
+                echo '<div class="content">';
+                if ($userExists) { // Authenticated, proceed with upload
+                    foreach ($_FILES['files']['tmp_name'] as $key => $tmpName) {
+                        $fileName = $_FILES['files']['name'][$key];
+                        $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
 
-                    if (in_array($fileExtension, $allowedUploadTypes)) {
-                        move_uploaded_file($tmpName, $fileName);
-                        // success message
-                        echo '<div class="uploadOkMessage"><p>File ' . $fileName . ' uploaded successfully.</p></div>';
-                    } else {
-                        // bad extension error
-                        echo '<div class="uploadErrorMessage"><p>Invalid file type: ' . $fileName . '</p></div>';
+                        if (in_array($fileExtension, $allowedUploadTypes)) {
+                            move_uploaded_file($tmpName, $fileName);
+                            // success message
+                            echo '<div class="uploadOkMessage"><p>File ' . $fileName . ' uploaded successfully.</p></div>';
+                        } else {
+                            // bad extension error
+                            echo '<div class="uploadErrorMessage"><p>Invalid file type: ' . $fileName . '</p></div>';
+                        }
                     }
+                } else {
+                    // Invalid username or password message
+                    echo '<div class="uploadErrorMessage"><p>Invalid username or password.</p></div>';
                 }
-            } else {
-                // Invalid username or password message
-                echo '<div class="uploadErrorMessage"><p>Invalid username or password.</p></div>';
+                echo '</div>';
             }
-            echo '</div>';
         }
     ?>
 
     <!----------------------------------- MULTIPLE DOWNLOADS SECTION (buttons)  ----------------------->
-    <div class="content" id="downloadControls">
-        <!-- 'Select...' checkbox button -->
-        <input type="checkbox" id="toggleCheckboxes">
-        <label for="toggleCheckboxes">Select...</label>
-        <div id="selectAllCheckbox">
-            <!-- 'All' checkbox button -->
-            <input type="checkbox" id="toggleAllCheckboxes">
-            <label for="toggleAllCheckboxes">All</label>
+    <div class="content"> 
+        <div id="downloadControls">
+            <!-- 'Select...' checkbox button -->
+            <input type="checkbox" id="toggleCheckboxes">
+            <label for="toggleCheckboxes">Select...</label>
+            <div id="selectAllCheckbox">
+                <!-- 'All' checkbox button -->
+                <input type="checkbox" id="toggleAllCheckboxes">
+                <label for="toggleAllCheckboxes">All</label>
+            </div>
+            <!-- 'Download Selected' button -->
+            <button id="downloadSelected">Download Selected</button>
         </div>
-        <!-- 'Download Selected' button -->
-        <button id="downloadSelected">Download Selected</button>
-    </div>
 
     <!------------------------------- FILES AND FOLDERS VIEW (main content part) ---------------------->
-    <div class="content">       
         <ul>
             <?php
             // Define custom error messages
