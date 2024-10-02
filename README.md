@@ -136,15 +136,13 @@ $notAllowedExtensions = array('html', 'php', 'swp', 'css');
 
 ```php
 $iconMapping = array(
-    'pdf' => 'icon-pdf',
-    'doc' => 'icon-doc',
-    'txt' => 'icon-txt',
-    'zip' => 'icon-zip',
-    'md' => 'icon-md',
-    'tar' => 'icon-tar',
-    'gz' => 'icon-gz',
-    'sh' => 'icon-sh',
-    // Add more mappings as needed
+    'pdf' => 'fa-regular fa-file-pdf',       // PDF document
+    'doc' => 'fa-regular fa-file-word',      // Microsoft Word document
+    'docx' => 'fa-regular fa-file-word',     // Microsoft Word document
+    'txt' => 'fa-solid fa-file-lines',       // Text document
+    'md' => 'fa-solid fa-file-code',         // Markdown document
+    'ppt' => 'fa-regular fa-file-powerpoint',// PowerPoint presentation
+    // ...
 );
 ```
 
