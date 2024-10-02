@@ -75,6 +75,20 @@ The upload functionality requires you to add users to the system, but it's entir
 
    This will remove the user's credentials from the `.users` file. When the last user is deleted, the `.users` file will be automatically removed, and **the upload section will be hidden.**
 
+3. **Upload types:** By default only compressed files are authorized to be uploaded. You can change what types you want by commenting/uncommenting or adding more types to the $allowedUploadTypes global variable at the top of the index.php file:
+
+   ```php
+   $allowedUploadTypes = array_merge(
+        // array('jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'tiff'),               // images
+        // array('mp4', 'mov', 'avi', 'mkv', 'webm', 'flv', 'wmv'),                 // videos
+        // array('mp3', 'wav', 'flac', 'ogg', 'aac', 'm4a'),                        // audio
+        // array('pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'rtf'), // documents
+        array('zip', 'rar', 'tar', 'gz', '7z', '7za'),                           // compressed
+        // array('sh'),                                                             // script
+        // add more/edit as needed
+    );
+   ```
+
 **Security Considerations**
 
 - For basic protection, rename the `create-user` script to `.create-user` so it's hidden on the file list (**note: this doesn't hide it completely**). It's better to move it to a location outside the web-accessible directory.
@@ -211,7 +225,7 @@ Here are some planned enhancements for the Single File PHP File Browser:
 - **Mouse-over File Preview:** Implement mouse-over file preview to display a small preview when hovering over file links.
 - **Pagination:** Implement pagination for directories with a large number of files and folders.
 - **Lazy Loading:** Improve performance by implementing lazy loading for large directories.
-- **Refactor:** Rewrite code into a class based design.
+- **Frontend:** Better mapping of icons and colors to default expected ones.
 
 ## Contribute
 
