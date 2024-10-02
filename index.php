@@ -1,31 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+    
+<!-- ---- SINGLE FILE PHP FILE BROWSER by Tarso Galvão ---- -->
+<!-- -- github.com/surtarso/single-file-php-file-browser -- -->
 
-<!-- ----------------- GLOBAL VARIABLES ------------------- -->
-<?php 
+<?php
+    // ----------------- GLOBAL VARIABLES ------------------- 
+
     // Define a default title if there is none from URL
     $defaultTitle = "Stuff";  // "My default title"
 
     // These extensions will NOT show up in file listings
+    // 'php' and 'swp' should probably be kept.
     $notAllowedExtensions = array('php', 'swp');
 
     // Allowed extensions to be uploaded by users
-    // -- Image types
-    // $allowedUploadTypes = array('jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'tiff');
-    // -- Video types
-    // $allowedUploadTypes = array('mp4', 'mov', 'avi', 'mkv', 'webm', 'flv', 'wmv');
-    // -- Audio types
-    // $allowedUploadTypes = array('mp3', 'wav', 'flac', 'ogg', 'aac', 'm4a');
-    // -- Document types
-    // $allowedUploadTypes = array('pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'rtf');
-    // -- Compressed types
-    $allowedUploadTypes = array('zip', 'rar', 'tar', 'gz', '7z');
-
-    // You can also combine some type arrays like this:
-    // $allowedUploadTypes = array_merge(
-    //     array('jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'tiff'),  // images
-    //     array('mp4', 'mov', 'avi', 'mkv', 'webm', 'flv', 'wmv')     // videos
-    // );
+    $allowedUploadTypes = array_merge(
+        // array('jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'tiff'),               // images
+        // array('mp4', 'mov', 'avi', 'mkv', 'webm', 'flv', 'wmv'),                 // videos
+        // array('mp3', 'wav', 'flac', 'ogg', 'aac', 'm4a'),                        // audio
+        // array('pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'rtf'), // documents
+        array('zip', 'rar', 'tar', 'gz', '7z', '7za'),                           // compressed
+        // array('sh'),                                                             // script
+        // add more/edit as needed
+    );
 
     // File that stores users credentials
     // If changed here, it also needs to be changed in 'create-user' script
@@ -119,25 +117,26 @@
         .icon-folder-open::before {content: "\f07c"; color: #428bca; cursor: pointer;}
         .icon-folder-closed::before {content: "\f07b"; color: #428bca; cursor: pointer;}
         /* ---------------------- ICON COLORS ----------------------- */
-        .fa-file-lines, .fa-file-image, .fa-android { color: #2ecc71; } /* Green */
-        .fa-file-pdf, .fa-windows, .fa-debian { color: #e74c3c; }      /* Red */
-        .fa-file-powerpoint, .fa-box-archive { color: #e67e22; }       /* Orange */
-        .fa-terminal, .fa-compass-drafting { color: #34495e; }         /* Dark Gray */
+        .fa-file-image, .fa-android { color: #2ecc71; }           /* Green */
+        .fa-file-pdf, .fa-windows, .fa-debian { color: #e74c3c; } /* Red */
+        .fa-file-powerpoint, .fa-box-archive { color: #e67e22; }  /* Orange */
+        .fa-terminal, .fa-compass-drafting { color: #34495e; }    /* Dark Gray */
+        .fa-box, .fa-object-group { color: #f0932b; }             /* Bright Orange */
+        .fa-palette, .fa-vector-square { color: whitesmoke; }     /* Whitesmoke */
+        .fa-file-zipper, .fa-paintbrush { color: #d35400; }       /* Dark Orange */
+        .fa-file-alt, .fa-file-lines { color: #95a5a6; }          /* Light Gray */  
         .fa-file-word, .fa-file-video { color: #3498db; }         /* Blue */
         .fa-file-code, .fa-file-audio { color: #9b59b6; }         /* Purple */
-        .fa-compact-disc, .fa-book { color: #f39c12; }      /* Amber */
-        .fa-apple, .fa-linux { color: #000000; }            /* Black */
-        .fa-file-excel { color: #27ae60; }        /* Dark Green */
-        .fa-file-csv { color: #f1c40f; }          /* Yellow */
-        .fa-file-alt { color: #95a5a6; }          /* Light Gray */  
-        .fa-hdd { color: #2980b9; }               /* Dark Blue */
-        .fa-redhat { color: #c0392b; }            /* Dark Red */
-        .fa-box { color: #f0932b; }               /* Bright Orange */
-        .fa-file-zipper { color: #d35400; }       /* Dark Orange */
-        .fa-coffee { color: #6f4e37; }            /* Coffee Brown */
-        .fa-database { color: #16a085; }          /* Teal */
-        .fa-font { color: #e91e63; }              /* Pink */
-        .fa-cube { color: #1abc9c; }              /* Turquoise */
+        .fa-compact-disc, .fa-book { color: #f39c12; }            /* Amber */
+        .fa-apple, .fa-linux { color: #000000; }                  /* Black */
+        .fa-cube, .fa-php { color: #1abc9c; }                     /* Turquoise */
+        .fa-file-csv, .fa-js { color: #f1c40f; }                  /* Yellow */
+        .fa-hdd, .fa-python { color: #2980b9; }                   /* Dark Blue */
+        .fa-redhat { color: #c0392b; }                            /* Dark Red */
+        .fa-coffee { color: #6f4e37; }                            /* Coffee Brown */
+        .fa-database { color: #16a085; }                          /* Teal */
+        .fa-font { color: #e91e63; }                              /* Pink */
+        .fa-file-excel { color: #27ae60; }                        /* Dark Green */
     </style>
 </head>
 <body>
@@ -211,7 +210,9 @@
     ?>
 
     <!----------------------------------- MULTIPLE DOWNLOADS SECTION (buttons)  ----------------------->
-    <div class="content"> 
+    <div class="content">
+
+        <?php //if (file_exists($credentialsFile)): ?>
         <div id="downloadControls">
             <!-- 'Select...' checkbox button -->
             <input type="checkbox" id="toggleCheckboxes">
@@ -224,10 +225,12 @@
             <!-- 'Download Selected' button -->
             <button id="downloadSelected">Download Selected</button>
         </div>
+        <?php //endif; ?>
 
     <!------------------------------- FILES AND FOLDERS VIEW (main content part) ---------------------->
-        <ul>
-            <?php
+        <?php
+            echo '<ul>';
+
             // Define custom error messages
             $errorMessages = [
                 'directory_not_found' => 'The specified directory does not exist.',
@@ -255,53 +258,56 @@
                     // Array of unwanted file extensions that will not show up in list
                     global $notAllowedExtensions;
 
-                    // Array mapping of file extensions to CSS classes
+                    // ------ Array mapping of file extensions to CSS classes ------
                     // This will map the file extensions found into fontawesome icons
+                    // Search icons on https://fontawesome.com/search
+                    // Use the correct version (check in <header>) and use free icons
+                    // If adding new icons, you also need to add a color in <style>
                     $iconMapping = array(
                         // Documents
-                        'pdf' => 'fa-file-pdf',        // PDF document
-                        'doc' => 'fa-file-word',       // Microsoft Word document
-                        'docx' => 'fa-file-word',      // Microsoft Word document
-                        'txt' => 'fa-file-lines',      // Text document
+                        'pdf' => 'fa-regular fa-file-pdf',      // PDF document
+                        'doc' => 'fa-regular fa-file-word',     // Microsoft Word document
+                        'docx' => 'fa-regular fa-file-word',    // Microsoft Word document
+                        'txt' => 'fa-solid fa-file-lines',      // Text document
                         'md' => 'fa-solid fa-file-code',        // Markdown document
-                        'ppt' => 'fa-file-powerpoint', // PowerPoint presentation
-                        'pptx' => 'fa-file-powerpoint',// PowerPoint presentation
-                        'xls' => 'fa-file-excel',      // Excel spreadsheet
-                        'xlsx' => 'fa-file-excel',     // Excel spreadsheet
-                        'csv' => 'fa-file-csv',        // CSV file
-                        'rtf' => 'fa-file-alt',        // Rich Text Format
-                        'odt' => 'fa-file-word',       // OpenDocument Text
-                        'ods' => 'fa-file-excel',      // OpenDocument Spreadsheet
-                        'odp' => 'fa-file-powerpoint', // OpenDocument Presentation
-                        'pages' => 'fa-file-alt',      // Apple Pages document
-                        'numbers' => 'fa-file-excel',  // Apple Numbers spreadsheet
-                        'key' => 'fa-file-powerpoint', // Apple Keynote presentation
+                        'ppt' => 'fa-regular fa-file-powerpoint',// PowerPoint presentation
+                        'pptx' => 'fa-regular fa-file-powerpoint',// PowerPoint presentation
+                        'xls' => 'fa-regular fa-file-excel',    // Excel spreadsheet
+                        'xlsx' => 'fa-regular fa-file-excel',   // Excel spreadsheet
+                        'csv' => 'fa-solid fa-file-csv',        // CSV file
+                        'rtf' => 'fa-regular fa-file-lines',    // Rich Text Format
+                        'odt' => 'fa-regular fa-file-word',     // OpenDocument Text
+                        'ods' => 'fa-regular fa-file-excel',    // OpenDocument Spreadsheet
+                        'odp' => 'fa-regular fa-file-powerpoint',// OpenDocument Presentation
+                        'pages' => 'fa-solid fa-file-lines',    // Apple Pages document
+                        'numbers' => 'fa-solid fa-file-excel',  // Apple Numbers spreadsheet
+                        'key' => 'fa-solid fa-file-powerpoint', // Apple Keynote presentation
                         // Compressed Files
-                        'zip' => 'fa-file-zipper',     // ZIP archive
-                        'tar' => 'fa-solid fa-box-archive',    // TAR archive
-                        'gz' => 'fa-solid fa-box-archive',     // GZ archive
-                        'rar' => 'fa-solid fa-box-archive',    // RAR archive
-                        '7z' => 'fa-solid fa-box-archive',     // 7Z archive
-                        '7za' => 'fa-solid fa-box-archive',    // 7ZA archive
-                        'xz' => 'fa-solid fa-box-archive',     // XZ archive
-                        'bz2' => 'fa-solid fa-box-archive',    // BZ2 archive
-                        'lz' => 'fa-solid fa-box-archive',     // LZ archive
-                        'z' => 'fa-solid fa-box-archive',      // Z archive
+                        'zip' => 'fa-regular fa-file-zipper',   // ZIP archive
+                        'tar' => 'fa-solid fa-box-archive',     // TAR archive
+                        'gz' => 'fa-solid fa-box-archive',      // GZ archive
+                        'rar' => 'fa-solid fa-box-archive',     // RAR archive
+                        '7z' => 'fa-solid fa-box-archive',      // 7Z archive
+                        '7za' => 'fa-solid fa-box-archive',     // 7ZA archive
+                        'xz' => 'fa-solid fa-box-archive',      // XZ archive
+                        'bz2' => 'fa-solid fa-box-archive',     // BZ2 archive
+                        'lz' => 'fa-solid fa-box-archive',      // LZ archive
+                        'z' => 'fa-solid fa-box-archive',       // Z archive
                         // Disk Images
                         'iso' => 'fa-solid fa-compact-disc',    // ISO disk image
                         'dmg' => 'fa-solid fa-compact-disc',    // Apple Disk Image
                         'img' => 'fa-solid fa-compact-disc',    // Disk Image file
-                        'vmdk' => 'fa-hard-drive',     // Virtual Machine Disk
-                        'vdi' => 'fa-hard-drive',      // VirtualBox Disk Image
-                        'qcow2' => 'fa-hard-drive',    // QEMU Copy On Write image
+                        'vmdk' => 'fa-regular fa-hard-drive',   // Virtual Machine Disk
+                        'vdi' => 'fa-regular fa-hard-drive',    // VirtualBox Disk Image
+                        'qcow2' => 'fa-regular fa-hard-drive',  // QEMU Copy On Write image
                         // Executable/Scripts
                         'sh' => 'fa-solid fa-terminal',         // Shell script
                         'bat' => 'fa-solid fa-file-code',       // Batch script
                         'exe' => 'fa-brands fa-windows',        // Executable file
                         'ps1' => 'fa-solid fa-file-code',       // PowerShell script
-                        'py' => 'fa-solid fa-file-code',        // Python script
-                        'js' => 'fa-solid fa-file-code',        // JavaScript code
-                        'php' => 'fa-solid fa-file-code',       // PHP script
+                        'py' => 'fa-brands fa-python',          // Python script
+                        'js' => 'fa-brands fa-js',              // JavaScript code
+                        'php' => 'fa-brands fa-php',            // PHP script
                         'java' => 'fa-solid fa-file-code',      // Java source code
                         'cpp' => 'fa-solid fa-file-code',       // C++ source code
                         'rb' => 'fa-solid fa-file-code',        // Ruby script
@@ -317,49 +323,49 @@
                         'rs' => 'fa-solid fa-file-code',        // Rust source code
                         'asm' => 'fa-solid fa-file-code',       // Assembly language source code
                         // Linux Packages
-                        'deb' => 'fa-brands fa-debian',          // Debian package
-                        'rpm' => 'fa-brands fa-redhat',          // Red Hat package
-                        'pkg' => 'fa-solid fa-box',              // macOS Installer package
-                        'appimage' => 'fa-brands fa-linux',      // Linux AppImage
-                        'snap' => 'fa-brands fa-linux',          // Linux Snap package
-                        'flatpak' => 'fa-brands fa-linux',       // Linux Flatpak package
+                        'deb' => 'fa-brands fa-debian',         // Debian package
+                        'rpm' => 'fa-brands fa-redhat',         // Red Hat package
+                        'pkg' => 'fa-solid fa-box',             // macOS Installer package
+                        'appimage' => 'fa-brands fa-linux',     // Linux AppImage
+                        'snap' => 'fa-brands fa-linux',         // Linux Snap package
+                        'flatpak' => 'fa-brands fa-linux',      // Linux Flatpak package
                         // Media Files - Video
-                        'avi' => 'fa-file-video',      // AVI video
-                        'wmv' => 'fa-file-video',      // WMV video
-                        'mov' => 'fa-file-video',      // MOV video
-                        'mp4' => 'fa-file-video',      // MP4 video
-                        'flv' => 'fa-file-video',      // FLV video
-                        'webm' => 'fa-file-video',     // WebM video
-                        'mkv' => 'fa-file-video',      // MKV video
-                        'mxf' => 'fa-file-video',      // MXF video
+                        'avi' => 'fa-regular fa-file-video',    // AVI video
+                        'wmv' => 'fa-regular fa-file-video',    // WMV video
+                        'mov' => 'fa-regular fa-file-video',    // MOV video
+                        'mp4' => 'fa-regular fa-file-video',    // MP4 video
+                        'flv' => 'fa-solid fa-file-video',      // FLV video
+                        'webm' => 'fa-regular fa-file-video',   // WebM video
+                        'mkv' => 'fa-regular fa-file-video',    // MKV video
+                        'mxf' => 'fa-solid fa-file-video',      // MXF video
                         // Media Files - Audio
-                        'mp3' => 'fa-file-audio',      // MP3 audio
-                        'ogg' => 'fa-file-audio',      // OGG audio
-                        'wav' => 'fa-file-audio',      // WAV audio
-                        'flac' => 'fa-file-audio',     // FLAC audio
-                        'aac' => 'fa-file-audio',      // AAC audio
-                        'wma' => 'fa-file-audio',      // WMA audio
-                        'm4a' => 'fa-file-audio',      // M4A audio
-                        'ape' => 'fa-file-audio',      // APE audio
-                        'aaf' => 'fa-file-audio',      // AAF audio
+                        'mp3' => 'fa-regular fa-file-audio',    // MP3 audio
+                        'ogg' => 'fa-regular fa-file-audio',    // OGG audio
+                        'wav' => 'fa-regular fa-file-audio',    // WAV audio
+                        'flac' => 'fa-regular fa-file-audio',   // FLAC audio
+                        'aac' => 'fa-regular fa-file-audio',    // AAC audio
+                        'wma' => 'fa-regular fa-file-audio',    // WMA audio
+                        'm4a' => 'fa-regular fa-file-audio',    // M4A audio
+                        'ape' => 'fa-regular fa-file-audio',    // APE audio
+                        'aaf' => 'fa-regular fa-file-audio',    // AAF audio
                         // Media Files - Image
-                        'jpg' => 'fa-file-image',      // JPEG image
-                        'jpeg' => 'fa-file-image',     // JPEG image
-                        'png' => 'fa-file-image',      // PNG image
-                        'gif' => 'fa-file-image',      // GIF image
-                        'bmp' => 'fa-file-image',      // BMP image
-                        'svg' => 'fa-file-image',      // SVG image
-                        'psd' => 'fa-file-image',      // Adobe Photoshop document
-                        'ai' => 'fa-file-image',       // Adobe Illustrator document
-                        'eps' => 'fa-file-image',      // EPS vector image
-                        'indd' => 'fa-file-alt',       // Adobe InDesign document
-                        'raw' => 'fa-file-image',      // RAW image
-                        'tiff' => 'fa-file-image',     // TIFF image
-                        'webp' => 'fa-file-image',     // WebP image
-                        'kra' => 'fa-file-image',      // Krita document
+                        'jpg' => 'fa-regular fa-file-image',    // JPEG image
+                        'jpeg' => 'fa-regular fa-file-image',   // JPEG image
+                        'png' => 'fa-regular fa-file-image',    // PNG image
+                        'gif' => 'fa-regular fa-file-image',    // GIF image
+                        'bmp' => 'fa-solid fa-palette',         // BMP image
+                        'svg' => 'fa-solid fa-vector-square',   // SVG image
+                        'psd' => 'fa-regular fa-file-image',    // Adobe Photoshop document
+                        'ai' => 'fa-solid fa-vector-square',    // Adobe Illustrator document
+                        'eps' => 'fa-regular fa-file-image',    // EPS vector image
+                        'indd' => 'fa-regular fa-object-group', // Adobe InDesign document
+                        'raw' => 'fa-regular fa-file-image',    // RAW image
+                        'tiff' => 'fa-regular fa-file-image',   // TIFF image
+                        'webp' => 'fa-regular fa-file-image',   // WebP image
+                        'kra' => 'fa-solid fa-paintbrush',      // Krita document
                         // eBooks
-                        'mobi' => 'fa-solid fa-book',  // MOBI document
-                        'epub' => 'fa-solid fa-book',  // EPUB document
+                        'mobi' => 'fa-solid fa-book',           // MOBI document
+                        'epub' => 'fa-solid fa-book',           // EPUB document
                         // Database Files
                         'sql' => 'fa-solid fa-database',        // SQL database
                         'db' => 'fa-solid fa-database',         // Database file
@@ -390,14 +396,14 @@
                         'hs' => 'fa-solid fa-file-code',        // Haskell source code
                         'erl' => 'fa-solid fa-file-code',       // Erlang source code
                         // Apple Extensions
-                        'ipa' => 'fa-brands fa-apple',           // iOS App Store Package
-                        'apk' => 'fa-brands fa-android',         // Android Package
+                        'ipa' => 'fa-brands fa-apple',          // iOS App Store Package
+                        'apk' => 'fa-brands fa-android',        // Android Package
                         // Other Important Files
                         'json' => 'fa-solid fa-file-code',      // JSON file
                         'xml' => 'fa-solid fa-file-code',       // XML file
                         'yaml' => 'fa-solid fa-file-code',      // YAML file
                         'yml' => 'fa-solid fa-file-code',       // YAML file
-                        'log' => 'fa-file-lines',      // Log file
+                        'log' => 'fa-solid fa-file-lines',      // Log file
                     );                    
 
                     echo '<ul class="folder-contents">';
@@ -530,9 +536,9 @@
             // dir, where the folder index.php is placed is the list root.
             $directory = './';
             listDirectory($directory); // Start the main loop
-            // ------------------ END OF PHP ---------------------------
-            ?>
-        </ul>
+            
+            echo '</ul>'
+        ?>
     </div>
     <footer>
         <p>
