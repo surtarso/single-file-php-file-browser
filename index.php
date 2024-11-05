@@ -61,8 +61,10 @@
     <title><?php echo isset($headerTitle) && !empty($headerTitle) ? $headerTitle : $defaultTitle; ?></title>
     <style>
         html, body {font-family: Arial, sans-serif; font-style: normal; margin: 0; padding: 0; background-color: #1a1b1a; height: 100%;}
-        header {background-color: #333; color: whitesmoke; text-align: center; padding: 20px 0;}
-        h1 {margin: 0; font-size: 32px;}
+        header {background-color: #333; color: whitesmoke; display: flex; flex-direction: column; align-items: center; justify-content: center;}
+        h1 {margin-bottom: 2px; margin-top: 10px;}
+        #disk-stats {margin-bottom: 10px;}
+        #disk-space {font-family: Arial, sans-serif; font-size: 16px;}
         footer {position: fixed; bottom: 0; left: 0; right: 0; text-align: center; background-color: #333; color: whitesmoke; padding: 0; font-size: 10px;}
         /* --------------- MAIN CONTENT BOX (for upload form and files/folders display) --------------- */
         .content {max-width: 800px; margin: 5px auto; padding: 10px; background-color: #333; border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);}
@@ -143,7 +145,23 @@
     <!-- --------------- top title header section --------------- -->
     <header>
         <!-- Dynamic header title with capitalized folder name or default title -->
-        <h1>List of <?php echo isset($headerTitle) && !empty($headerTitle) ? $headerTitle : $defaultTitle; ?></h1>
+        <h1>List of <?php echo isset($headerTitle) && !empty($headerTitle) ? $headerTitle : $defaultTitle; ?> </h1>
+
+        <!-- Disk free space display -->
+        <i class="fa-solid fa-hard-drive" id="disk-stats"> <span id="disk-space"></span> </i>
+        <?php
+            // Calculate and format free space in percentage
+            $total_space = disk_total_space("/");
+            $free_space = disk_free_space("/");
+            $free_space_percent = round(($free_space / $total_space) * 100, 2);
+            $formatted_free_space_percent = number_format($free_space_percent, 2) . "%";
+            
+            // Format the free space size in a human-readable format
+            $formatted_free_space_size = formatFileSize($free_space);
+
+            // Output the formatted free space to the HTML element
+            echo "<script>document.getElementById('disk-space').textContent = '$formatted_free_space_percent ($formatted_free_space_size free)';</script>";
+        ?>
     </header>
 
     <!-- ---------------------------------  UPLOAD SECTION ----------------------------------- -->
