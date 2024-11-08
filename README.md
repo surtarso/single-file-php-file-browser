@@ -24,6 +24,7 @@ This project offers the following functionalities:
 - Allows users to navigate through the directory tree structure.
 - Download or Upload single or multiple files at once.
 - Excludes specific file extensions and hidden files from the listing.
+- Displays free space on current directory.
 - Automatic link to other instances of this script.*
 
 [Back to top](#table-of-contents)
@@ -221,11 +222,12 @@ Here are some planned enhancements for the Single File PHP File Browser:
 - ~~**Bulk Uploads:** Add the ability to select and upload multiple files at once.~~ [Done]
 - ~~**Password:** Secure uploads with user/password.~~ [Done]
 - ~~**Security:** Use hash to save/retrieve passwords from .users file.~~ [Done]
+- ~~**Frontend:** Better mapping of icons and colors to default expected ones.~~ [Done]
+- **Free Space:** Display free space on current directory so uploaders can be informed. [In progress]
 - **Upload Progress:** Display upload progress for user feedback.
 - **Mouse-over File Preview:** Implement mouse-over file preview to display a small preview when hovering over file links.
 - **Pagination:** Implement pagination for directories with a large number of files and folders.
 - **Lazy Loading:** Improve performance by implementing lazy loading for large directories.
-- **Frontend:** Better mapping of icons and colors to default expected ones.
 
 ## Contribute
 
