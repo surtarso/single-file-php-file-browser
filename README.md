@@ -31,12 +31,11 @@ This project offers the following functionalities:
 
 ## Screenshot
 
-<table>
-  <tr>
-    <td><img src="ss2.png" alt="Selection view"></td>
-    <td><img src="ss4.png" alt="Upload status view"></td>
-  </tr>
-</table>
+| Normal view | Uploads enabled |
+| ---------------------------------- | ---------------------------------- |
+| ![image](https://github.com/user-attachments/assets/4ac672f9-d835-4dbf-8de9-350cc8586873) | ![image](https://github.com/user-attachments/assets/e6d580d4-44f0-473a-a1ec-7eb2722c7cb8) |
+
+
 <p align="center">(*Folders with the 'external link' icon will navigate to their own index.php file instance.)</p>
 
 [Back to top](#table-of-contents)
