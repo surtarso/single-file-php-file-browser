@@ -223,7 +223,7 @@ Here are some planned enhancements for the Single File PHP File Browser:
 - ~~**Password:** Secure uploads with user/password.~~ [Done]
 - ~~**Security:** Use hash to save/retrieve passwords from .users file.~~ [Done]
 - ~~**Frontend:** Better mapping of icons and colors to default expected ones.~~ [Done]
-- **Free Space:** Display free space on current directory so uploaders can be informed. [In progress]
+- ~~**Free Space:** Display free space on current directory so uploaders can be informed.~~ [Done]
 - **Upload Progress:** Display upload progress for user feedback.
 - **Mouse-over File Preview:** Implement mouse-over file preview to display a small preview when hovering over file links.
 - **Pagination:** Implement pagination for directories with a large number of files and folders.
