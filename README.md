@@ -41,10 +41,10 @@ This project offers the following functionalities:
 [Back to top](#table-of-contents)
 
 ## Usage
+>[!IMPORTANT]
+>Make sure you have PHP enabled on your webserver.
 
 To use the Single File PHP File Browser, follow these simple steps:
-
-**Make sure you have PHP enabled on your webserver.**
 
 1. Download the `index.php` file from this project.
 
@@ -54,8 +54,10 @@ To use the Single File PHP File Browser, follow these simple steps:
 
 The `index.php` file will automatically generate a directory listing for the specified folder, allowing you to view and access the contained files and folders via a user-friendly web interface.
 ## Uploads (Optional)
+>[!IMPORTANT]
+>The upload functionality requires you to add users to the system.
 
-The upload functionality requires you to add users to the system, but it's entirely optional. Here's how to set it up:
+Here's how to set it up:
 
 **Enabling Uploads**
 
@@ -90,8 +92,8 @@ The upload functionality requires you to add users to the system, but it's entir
    ```
 
 **Security Considerations**
-
-- For basic protection, rename the `create-user` script to `.create-user` so it's hidden on the file list (**note: this doesn't hide it completely**). It's better to move it to a location outside the web-accessible directory.
+>[!WARNING]
+>For basic protection, rename the `create-user` script to `.create-user` so it's hidden on the file list (**note: this doesn't hide it completely**). It's better to move it to a location outside the web-accessible directory.
 
 
 [Back to top](#table-of-contents)
