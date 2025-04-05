@@ -160,7 +160,7 @@
             $formatted_free_space_size = formatFileSize($free_space);
 
             // Output the formatted free space to the HTML element
-            echo "<script>document.getElementById('disk-space').textContent = '$formatted_free_space_percent ($formatted_free_space_size free)';</script>";
+            echo "<script>document.getElementById('disk-space').textContent = '$formatted_free_space_size ($formatted_free_space_percent) free';</script>";
         ?>
     </header>
 
