@@ -1,5 +1,7 @@
 # Single File PHP File Browser
 
+[Experience a live instance with some mock files](https://tarsogalvao.ddns.net/stuff/)
+
 ## Table of Contents
 1. [Introduction](#introduction)
 2. [Functionality](#functionality)
