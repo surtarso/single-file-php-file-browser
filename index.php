@@ -151,8 +151,8 @@
         <i class="fa-solid fa-hard-drive" id="disk-stats"> <span id="disk-space"></span> </i>
         <?php
             // Calculate and format free space in percentage
-            $total_space = disk_total_space("/");
-            $free_space = disk_free_space("/");
+            $total_space = disk_total_space(".");
+            $free_space = disk_free_space(".");
             $free_space_percent = round(($free_space / $total_space) * 100, 2);
             $formatted_free_space_percent = number_format($free_space_percent, 2) . "%";
             
