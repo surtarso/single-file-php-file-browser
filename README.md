@@ -1,6 +1,6 @@
 # Single File PHP File Browser
 
-[Experience a live instance with some mock files](https://tarsogalvao.ddns.net/stuff/)
+[Experience a live instance with some mock files](https://tarsogalvao.ddns.net/sample/stuff/)
 
 ## Table of Contents
 1. [Introduction](#introduction)
