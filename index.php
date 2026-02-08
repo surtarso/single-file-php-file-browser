@@ -120,7 +120,7 @@
         .icon-folder-closed::before {content: "\f07b"; color: #428bca; cursor: pointer;}
         /* ---------------------- ICON COLORS ----------------------- */
         .fa-file-image, .fa-android { color: #2ecc71; }           /* Green */
-        .fa-file-pdf, .fa-windows, .fa-debian { color: #e74c3c; } /* Red */
+        .fa-file-pdf, .fa-windows { color: #e74c3c; }             /* Red */
         .fa-file-powerpoint, .fa-box-archive { color: #e67e22; }  /* Orange */
         .fa-terminal, .fa-compass-drafting { color: #34495e; }    /* Dark Gray */
         .fa-box, .fa-object-group { color: #f0932b; }             /* Bright Orange */
@@ -134,7 +134,6 @@
         .fa-cube, .fa-php { color: #1abc9c; }                     /* Turquoise */
         .fa-file-csv, .fa-js { color: #f1c40f; }                  /* Yellow */
         .fa-hdd, .fa-python { color: #2980b9; }                   /* Dark Blue */
-        .fa-redhat { color: #c0392b; }                            /* Dark Red */
         .fa-coffee { color: #6f4e37; }                            /* Coffee Brown */
         .fa-database { color: #16a085; }                          /* Teal */
         .fa-font { color: #e91e63; }                              /* Pink */
@@ -341,8 +340,8 @@
                         'rs' => 'fa-solid fa-file-code',        // Rust source code
                         'asm' => 'fa-solid fa-file-code',       // Assembly language source code
                         // Linux Packages
-                        'deb' => 'fa-brands fa-debian',         // Debian package
-                        'rpm' => 'fa-brands fa-redhat',         // Red Hat package
+                        'deb' => 'fa-solid fa-box',             // DEB package
+                        'rpm' => 'fa-solid fa-box',             // RPM package
                         'pkg' => 'fa-solid fa-box',             // macOS Installer package
                         'appimage' => 'fa-brands fa-linux',     // Linux AppImage
                         'snap' => 'fa-brands fa-linux',         // Linux Snap package
